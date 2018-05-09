@@ -1,0 +1,12 @@
+.fl {
+	float: left
+}
+
+.fr {
+	float: right
+}
+
+.con {
+	width: 1200px;
+	margin: 0 auto
+}
