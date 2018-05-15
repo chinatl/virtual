@@ -24,7 +24,7 @@
 						<p>{{item.phone}}</p>
 					</div>
 				</div>	
-				<div class="new-account" @click='open_dialog("add_user_dialog")'>
+				<div class="new-account" @click='open_dialog("add_user_dialog")' v-if='!$store.state.user.mainUsersId'>
 					<h4>{{$t('user["新建独立账户"]')}}</h4>
 					<p>{{$t('user["新账号说明"]')}}</p>
 				</div>
@@ -111,6 +111,129 @@
 			</div>	
 		</el-card>
 	</div>
+	<div class="pay-content" v-if='!$store.state.user.mainUsersId'>
+		<el-card class="box-card">
+	    	<div slot="header" class="clearfix">
+		  		<span style="font-size:14px;font-weight:bold">{{$t('user["实名认证"]')}}</span>
+		  	</div>
+			<div class="select">
+				<div class="safe-info">
+					<ul>
+						<li>
+							<div class="l">
+								<h3>{{$t('user["初级认证"]')}}</h3>
+								<p>
+							    	<span class="auth" v-if='$store.state.user.realName'>{{$t('user["已设置"]')}}</span> 
+									<span class="not-auth" v-if='!$store.state.user.realName'>{{$t('user["未认证"]')}}</span>
+									<!---->
+									<!---->
+								</p>
+							</div>
+							<div class="r" @click='open_primary'><a>{{ $store.state.user.realName ? $t('user["修改"]') : $t('user["认证"]')}}</a></div>
+						</li>
+						<li>
+							<div class="l">
+								<h3>{{$t('user["高级认证"]')}}</h3>
+								<p>
+							    	<span class="auth" v-if='$store.state.user.certificatePath1 && $store.state.user.certificatePath2 && $store.state.user.certificatePath3 '>{{$t('user["已设置"]')}}</span>
+									<span class="not-auth" v-if='!$store.state.user.certificatePath1 || !$store.state.user.certificatePath2 || !$store.state.user.certificatePath3 '>{{$t('user["未认证"]')}}</span>
+									<!---->
+									<!---->
+								</p>
+							</div>
+							<div class="r" @click='open_senior'><a>{{ $store.state.user.certificatePath1 && $store.state.user.certificatePath2 && $store.state.user.certificatePath3 ? $t('user["修改"]') : $t('user["认证"]')}}</a></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</el-card>
+	</div>
+<el-dialog
+	:title="$t(`user['高级认证']`)"
+:visible.sync="SeniorVisible"
+@close='primary_form={}'
+width="40%"
+>
+	<el-form  label-width="200px">
+		<el-form-item label='身份证人像面:'>
+			<div class="upload-imgList" v-show='headPortrait'>
+				<i class="el-icon-close"  @click='delimg1'></i>
+				<img :src="headPortrait" alt="">
+			</div>
+			<el-upload
+			ref='upload1'
+				v-show='!headPortrait'
+			  action="/log/addUserIDCard"
+			  :auto-upload='true'
+			  list-type="picture-card"
+			  :limit='1'
+			  :on-change='pushImg1'
+			  name='headPortrait'>
+			  <i class="el-icon-plus"></i>
+			</el-upload>
+		</el-form-item>
+		<el-form-item label='身份证国徽面:'>
+			<div class="upload-imgList" v-show='nationalEmblem'>
+				<i class="el-icon-close" @click='delimg2'></i>
+				<img :src="nationalEmblem" alt="">
+			</div>
+			<el-upload
+		  ref='upload2'
+			  v-show='!nationalEmblem'
+			  action="/log/addUserIDCard"
+			  :auto-upload='true'
+			  list-type="picture-card"
+			  :limit='1'
+			  :on-change='pushImg2'
+			  name='nationalEmblem'>
+			  <i class="el-icon-plus"></i>
+			</el-upload>
+		</el-form-item>
+		<el-form-item label='身份证人像面:'>
+			<div class="upload-imgList" v-show='people'>
+				<i class="el-icon-close" @click='delimg3'></i>
+				<img :src="people" alt="">
+			</div>
+			<el-upload
+			  ref='upload3'
+			  v-show='!people'
+			  action="/log/addUserIDCard"
+			  :auto-upload='true'
+			  list-type="picture-card"
+			  :limit='1'
+			  :on-change='pushImg3'
+			  name='people'>
+			  <i class="el-icon-plus"></i>
+			</el-upload>
+		</el-form-item>
+				<el-form-item>
+			<el-button @click="cancel_pwd">{{$t('user["取消"]')}}</el-button>
+			<el-button type="primary" @click="submit_upload_img">{{$t('user["提交"]')}}</el-button>
+		</el-form-item>
+	</el-form>
+	
+</el-dialog>
+<el-dialog
+:title="$t(`user['初级认证']`)"
+:visible.sync="PrimaryVisible"
+align='center'
+@close='primary_form={}'
+width="30%"
+>
+	<el-form :model="primary_form" label-width="0px">
+		<el-form-item>
+			<el-input v-model="primary_form.realName" :placeholder="$t(`user['真实姓名']`)"></el-input>
+		</el-form-item>
+		<el-form-item>
+			<el-input v-model="primary_form.iDCardNo" :placeholder="$t(`user['身份证号']`)"></el-input>
+		</el-form-item>
+		<p style="color:red;text-align:left;margin:-10px 0 10px 0">请确认填写信息的真实性，否则后果自负！</p>
+		<el-form-item align='center'>
+			<el-button @click="cancel_pwd">{{$t('user["取消"]')}}</el-button>
+			<el-button type="primary" @click="submit_primary_email">{{$t('user["提交"]')}}</el-button>
+		</el-form-item>
+	</el-form>
+</el-dialog>
 <!--个人账户修改-->
 <el-dialog
 	  :title="$t(`user['修改用户名']`)"
@@ -159,9 +282,7 @@
 </el-form>
 </el-dialog>
 <!-- 交易密码设置 -->
-<el-dialog :title="$t(`user['交易密码设置']`)" 
-@close='trade_form={}'
-:visible.sync="trade_dialog" width="40%" center>
+<el-dialog :title="$t(`user['交易密码设置']`)" @close='trade_form={}' :visible.sync="trade_dialog" width="40%" center>
 	<el-form :model="trade_form" label-width="0px">
 		<el-form-item>
 			<el-input v-model="trade_form.login_password" type='password' :placeholder="$t(`user['旧交易密码']`)"></el-input>
@@ -182,9 +303,7 @@
 	</el-form>
 </el-dialog>
 <!--手机号验证码登录验证-->
-<el-dialog 
-		   @close='oc_form_phone={}'
-:title="user_account.isphone ? $t(`user['关闭手机号验证']`) : $t(`user['开启手机号验证']`)" :visible.sync="oc_phone_dialog" width="40%" center>
+<el-dialog @close='oc_form_phone={}' :title="user_account.isphone ? $t(`user['关闭手机号验证']`) : $t(`user['开启手机号验证']`)" :visible.sync="oc_phone_dialog" width="40%" center>
 	<el-form :model="oc_form_phone" label-width="0px">
 		<el-form-item>
 			<el-input v-model="oc_form_phone.verificationPhone" :placeholder="$t(`user['动态验证码']`)">
@@ -200,9 +319,7 @@
 	</el-form>
 </el-dialog>
 <!--手机号修改-->
-<el-dialog :title="$t(`user['手机号修改']`)"
-   @close='form_phone={}'
-  :visible.sync="phone_dialog" width="30%" center>
+<el-dialog :title="$t(`user['手机号修改']`)" @close='form_phone={}' :visible.sync="phone_dialog" width="30%" center>
 	<el-form :model="form_phone" label-width="0px">
 		<el-form-item>
 			<el-input v-model="form_phone.phone" :placeholder="$t(`user['新手机号']`)"></el-input>
@@ -221,9 +338,7 @@
 	</el-form>
 </el-dialog>
 <!--邮箱登录验证-->
-<el-dialog 
-   @close='oc_form_email={}'
-:title="user_account.isemail ? $t(`user['关闭邮箱登录验证']`) : $t(`user['开启邮箱登录验证']`)" :visible.sync="oc_email_dialog" width="40%" center>
+<el-dialog @close='oc_form_email={}' :title="user_account.isemail ? $t(`user['关闭邮箱登录验证']`) : $t(`user['开启邮箱登录验证']`)" :visible.sync="oc_email_dialog" width="40%" center>
 	<el-form :model="oc_form_email" label-width="0px">
 		<el-form-item>
 			<el-input v-model="oc_form_email.verificationPhone" :placeholder="$t(`user['动态验证码']`)">
@@ -239,9 +354,7 @@
 	</el-form>
 </el-dialog>
 <!--邮箱认证-->
-<el-dialog 
-   @close='form_email={}'
-:title="$t(`user['邮箱设置']`)" :visible.sync="email_dialog" width="30%" center>
+<el-dialog @close='form_email={}' :title="$t(`user['邮箱设置']`)" :visible.sync="email_dialog" width="30%" center>
 	<el-form :model="form_email" label-width="0px">
 		<el-form-item>
 			<el-input v-model="form_email.mail" :placeholder="$t(`user['邮箱地址']`)"></el-input>
@@ -260,9 +373,7 @@
 	</el-form>
 </el-dialog>
 <!--新建子账户-->
-<el-dialog title="新建子账户"
-   @close='addKidUsers={}'
-  :visible.sync="add_user_dialog" width="30%" center>
+<el-dialog title="新建子账户" @close='addKidUsers={}' :visible.sync="add_user_dialog" width="30%" center>
 	<el-form :model="addKidUsers" label-width="0px">
 		<el-form-item>
 			<el-input v-model="addKidUsers.kidName" :placeholder="$t(`user['子账户昵称']`)"></el-input>
@@ -280,9 +391,7 @@
 	</el-form>
 </el-dialog>
 <!-- google 认证 -->
-<el-dialog title="Google 设置"
-   @close='add_google_form={}'
-  :visible.sync="add_google_dialog" width="50%" center>
+<el-dialog title="Google 设置" @close='add_google_form={}' :visible.sync="add_google_dialog" width="50%" center>
 	<div class="qcrode_intr">
 		<div class="qcrode">
 			<vue-qrs :text="qcrode_text" height="200" width="200"></vue-qrs>
@@ -317,9 +426,7 @@
 	</el-form>
 </el-dialog>
 <!--登录 + google 验证-->
-<el-dialog 
-   @close='oc_form_google={}'
-:title="user_account.isgoogle ? $t(`user['关闭google登录验证']`) : $t(`user['开启google登录验证']`)" :visible.sync="oc_google_dialog" width="40%" center>
+<el-dialog @close='oc_form_google={}' :title="user_account.isgoogle ? $t(`user['关闭google登录验证']`) : $t(`user['开启google登录验证']`)" :visible.sync="oc_google_dialog" width="40%" center>
 	<el-form :model="oc_form_google" label-width="0px">
 		<el-form-item>
 			<el-input v-model="oc_form_google.googlephone" :placeholder="$t(`user['goole动态验证码']`)">
@@ -343,6 +450,13 @@
 		},
 		data() {
 			return {
+				headPortrait: '',
+				nationalEmblem: '',
+				people: '',
+				primary_form: {},
+				senior_form: {},
+				PrimaryVisible: false,
+				SeniorVisible: false,
 				qcrode_text: '',
 				nowUser: 'user',
 				fullscreenLoading: false,
@@ -418,7 +532,59 @@
 			}
 		},
 		methods: {
+			submit_upload_img() {
+				if (!this.headPortrait || !this.nationalEmblem || !this.people) {
+					this.$message({
+						showClose: true,
+						message: '资料不全',
+						type: 'error'
+					});
+					return
+				}
+				this.SeniorVisible = false;
+				this.init();
+				this.$message({
+					showClose: true,
+					message: '资料提交成功',
+					type: 'success'
+				});
+			},
+			delimg1() {
+				this.headPortrait = '';
+				this.$refs.upload1.clearFiles();
+			},
+			delimg2() {
+				this.nationalEmblem = '';
+				this.$refs.upload2.clearFiles();
+			},
+			delimg3() {
+				this.people = '';
+				this.$refs.upload3.clearFiles();
+			},
 			/*初始化页面*/
+			pushImg1(file, fileList) {
+				this.headPortrait = file.url;
+			},
+			pushImg2(file, fileList) {
+				this.nationalEmblem = file.url;
+			},
+			pushImg3(file, fileList) {
+				this.people = file.url;
+			},
+			open_senior() {
+				this.SeniorVisible = true;
+				this.headPortrait = this.$store.state.user.certificatePath1 || '';
+				this.nationalEmblem = this.$store.state.user.certificatePath2 || '';
+				this.people = this.$store.state.user.certificatePath3 || '';
+				this.$refs.upload1.clearFiles();
+				this.$refs.upload2.clearFiles();
+				this.$refs.upload3.clearFiles();
+			},
+			//高级认证
+			open_primary() {
+				this.PrimaryVisible = true;
+				this.primary_form = JSON.parse(JSON.stringify(this.$store.state.user));
+			},
 			init() {
 				this.fullscreenLoading = true;
 				Post({
@@ -633,6 +799,12 @@
 				})
 			},
 			/**/
+			submit_primary_email() {
+				this.submit_verification('addUserIDCard', {
+					realName: this.primary_form.realName,
+					iDCardNo: this.primary_form.iDCardNo,
+				}, 'PrimaryVisible')
+			},
 			submit_addKidUsers() {
 				this.submit_verification('addKidUsers', {
 					kidName: this.addKidUsers.kidName,
@@ -653,6 +825,8 @@
 				this.trade_dialog = false;
 				this.add_google_dialog = false;
 				this.oc_google_dialog = false;
+				this.PrimaryVisible = false;
+				this.SeniorVisible = false;
 			},
 			edit_user(data) {
 				this.user_dialog = true;
@@ -734,7 +908,7 @@
 				this.submit_verification('updUserNickName', {
 					nickName: this.username_form.nickName,
 					pass: MD5(this.username_form.pass),
-					id:this.username_form.id 
+					id: this.username_form.id
 				}, 'user_dialog')
 			},
 			/*修改交易密码*/
@@ -748,8 +922,8 @@
 					return
 				}
 				this.submit_verification('updUserNickName', {
-					tradPassword: MD5(this.trade_form.tradPassword),//新交易密码
-					login_password: MD5(this.trade_form.login_password),//旧交易密码
+					tradPassword: MD5(this.trade_form.tradPassword), //新交易密码
+					login_password: MD5(this.trade_form.login_password), //旧交易密码
 					pass: MD5(this.trade_form.pass),
 					id: this.$store.state.user.id
 				}, 'trade_dialog')
@@ -793,15 +967,37 @@
 	}
 
 </script>
-<style >
+<style>
+	.upload-imgList {
+		width: 148px;
+		height: 148px;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.upload-imgList img {
+		width: 100%;
+	}
+
+	.upload-imgList .el-icon-close {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 18px;
+		color: #000;
+		cursor: pointer;
+	}
+
 	.pay-content {
 		margin-bottom: 20px;
 	}
-	
+
 	.pay_panel {
 		padding: 18px;
 	}
-	
+
 	.users {
 		width: 526px;
 		height: 76px;
@@ -819,7 +1015,7 @@
 		float: left;
 		margin: 8px 10px;
 	}
-	
+
 	.avatar {
 		margin-right: 10px;
 		width: 50px;
@@ -828,13 +1024,13 @@
 		overflow: hidden;
 		position: relative;
 	}
-	
+
 	.info p {
 		font-size: 14px;
 		color: #000;
 		margin: 8px 0
 	}
-	
+
 	.orange {
 		display: inline-block;
 		margin-left: 8px;
@@ -842,15 +1038,15 @@
 		font-size: 12px;
 		cursor: pointer
 	}
-	
+
 	.current {
 		border-color: #ff9d11;
 	}
-	
+
 	.pay_panel .safe-info {
 		margin-top: -20px;
 	}
-	
+
 	.pay_panel .safe-info li {
 		display: -ms-flexbox;
 		display: -webkit-box;
@@ -866,7 +1062,7 @@
 		color: #999;
 		border-bottom: 1px solid #f2f3f5;
 	}
-	
+
 	.safe-info li .l,
 	.safe-info li .r {
 		display: -webkit-box;
@@ -876,31 +1072,31 @@
 		-ms-flex-align: center;
 		align-items: center;
 	}
-	
+
 	.safe-info li h3 {
 		width: 250px;
 		color: #000;
 		font-size: 13px;
 	}
-	
+
 	.safe-info li p {
 		color: #999;
 		width: 150px;
 	}
-	
+
 	.safe-info li p .auth {
 		color: #31C871;
 	}
-	
+
 	.safe-info li p .ruo {
 		color: red;
 	}
-	
+
 	.pay_panel .safe-info li .r a {
 		margin-left: 10px;
 		color: #ff9d11;
 	}
-	
+
 	.safe-info li .l,
 	.safe-info li .r {
 		display: -webkit-box;
@@ -910,7 +1106,7 @@
 		-ms-flex-align: center;
 		align-items: center;
 	}
-	
+
 	.new-account {
 		cursor: pointer;
 		border: 1px dashed #ddd;
@@ -924,22 +1120,22 @@
 		margin: 8px 10px;
 		padding-left: 20px;
 	}
-	
+
 	.new-account:hover {
 		border-color: #ff9d11
 	}
-	
+
 	.new-account h4 {
 		margin-top: 10px;
 		font-weight: 700;
 		color: #555;
 	}
-	
+
 	.new-account p {
 		color: #aaa;
 		margin-top: 8px;
 	}
-	
+
 	.qcrode_intr {
 		padding: 0 0px;
 		display: -ms-flexbox;
@@ -949,7 +1145,7 @@
 		margin-bottom: 10px;
 		justify-content: center;
 	}
-	
+
 	.qcrode {
 		webkit-box-flex: 0;
 		-ms-flex: none;
@@ -957,30 +1153,30 @@
 		margin-right: 20px;
 		width: 200px;
 	}
-	
+
 	.qcrode img {
 		width: 200px;
 		height: 200px;
 	}
-	
+
 	.introduce {
 		width: 370px;
 	}
-	
+
 	.introduce h3 {
 		font-size: 14px;
 		color: #333;
 		font-weight: 700;
 		margin-bottom: 5px;
 	}
-	
+
 	.introduce p {
 		line-height: 1.5;
 		color: #888;
 		font-size: 12px;
 		margin-bottom: 4px;
 	}
-	
+
 	.introduce p.red {
 		color: rgb(255, 0, 0);
 	}

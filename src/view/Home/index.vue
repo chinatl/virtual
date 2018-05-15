@@ -20,7 +20,7 @@
 						<li v-for='(item,index) in nav_data'
 							@click='change_nav(item,index)'
 							:class="current === index ? 'menu__item menu__item--current':'menu__item'" >
-							<a class="menu__link">{{item.vName}}{{$t('home["市场"]')}}</a>
+							<a class="menu__link" style="line-height:25px"><img :src="item.markUrl" alt="" class="markUrl" v-if='item.vName !== "我的"'>{{item.vName}}{{$t('home["市场"]')}}</a>
 						</li>
 					</ul>
 				</div>
@@ -29,6 +29,7 @@
 				<el-table :data="list" 
 				v-loading='loading'
 				 fit highlight-current-row
+				 @row-click='pushtrade'
 				style="width: 100%;margin-top:20px">
 <!--			   :default-sort = "{prop: 'trend', order: 'descending'}"-->
 					<el-table-column align="center" width='100px'>
@@ -49,6 +50,17 @@
 											<span>{{scope.row.latestPrize}}</span>
 											</template>
 </el-table-column>
+
+<el-table-column align="center" :label="$t(`home['24h最大价格']`)">
+	<template slot-scope="scope">
+					<span style="color:rgb(253, 49, 91)">{{scope.row.maxprize}}</span>
+					</template>
+</el-table-column>
+<el-table-column align="center" :label="$t(`home['24h最小价格']`)">
+	<template slot-scope="scope">
+					<span style="color:rgb(48, 194, 150)">{{scope.row.minprize}}</span>
+					</template>
+</el-table-column>
 <el-table-column align="center" :label="$t(`home['24h总金额']`)">
 	<template slot-scope="scope">
 					<span>{{scope.row.sumAnout}}</span>
@@ -56,7 +68,7 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['涨跌幅']`)" sortable prop='trend'>
 	<template slot-scope="scope">
-					<span>{{scope.row.roseFall}}</span>
+					<span :style='{color: scope.row.roseFall >= 0 ? "rgb(48, 194, 150)" : "rgb(253, 49, 91)"}'>{{scope.row.roseFall}}</span>
 					</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['6小时走势']`)">
@@ -142,6 +154,12 @@
 		},
 		computed: {},
 		methods: {
+			pushtrade(row, event, column) {
+				if (!column.label) {
+					return
+				}
+				window.location.href = "./trade?"+row.vName;
+			},
 			showstart(index) {
 				return this.list[index].show
 			},
@@ -255,7 +273,7 @@
 			})
 			/*初始化用户*/
 			/*获取客服配置*/
-		
+
 
 		}
 	}
@@ -265,6 +283,14 @@
 	@import '../../assets/css/line.css';
 	.layout-home {
 		width: 100%;
+	}
+
+	.markUrl {
+		width: 24px;
+		height: 24px;
+		vertical-align: sub;
+		margin-right: 10px;
+
 	}
 
 	div.el-carousel {

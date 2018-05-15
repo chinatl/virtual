@@ -17,13 +17,13 @@
 			</dl>
 			<dl>
 				<dt>{{$t('footer["联系我们"]')}}</dt>
-				<dd><span>工作日工作时间</span>：</dd>
-				<dd><span>节假日工作时间</span>：</dd>
-				<dd><span>联系QQ</span>：</dd>
-				<dd><span>联系微博</span>：</dd>
-				<dd><span>联系微博</span>：</dd>
-				<dd><span>qq群</span>：</dd>
-				<dd><span>联系微信</span>：</dd>
+				<dd><span>工作日工作时间：</span>{{concat.workingDay}}</dd>
+				<dd><span>节假日工作时间：</span>{{concat.restDay}}</dd>
+				<dd><span>联系QQ：</span>{{concat.qq}}</dd>
+				<dd><span>联系电话：</span>{{concat.phone}}</dd>
+				<dd><span>联系微博：</span>{{concat.microBlog}}</dd>
+				<dd><span>qq群：</span>{{concat.qqGroup}}</dd>
+				<dd><span>联系微信：</span>{{concat.wechat}}</dd>
 			</dl>
 		</div>
 		<div class="copyright">
@@ -38,7 +38,7 @@
 	export default {
 		data() {
 			return {
-
+				concat:{}
 			}
 		},
 		created() {
@@ -46,7 +46,7 @@
 				url: 'work/selWork',
 				success: res => {
 					if (res.code === 0) {
-						console.log(res.data)
+						this.concat = res.data
 					} else {
 						this.$message({
 							showClose: true,
@@ -113,5 +113,8 @@
 	.footer dl dd a {
 		color: rgba(255, 255, 255, .7);
 	}
-
+	.footer-menu dl dd  span{
+		display: inline-block;
+		width: 100px;	
+	}
 </style>

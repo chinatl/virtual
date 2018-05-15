@@ -17,6 +17,7 @@ import bill from '@/view/Account/bill';
 import currency from '@/view/Account/currency';
 import log from '@/view/Account/log';
 import rechange from '@/view/Account/rechange';
+import sublog from '@/view/Account/sublog';
 /*法币交易*/
 import Tender from '@/view/Tender';
 import sell from '@/view/Tender/sell';
@@ -95,8 +96,18 @@ export default new Router({
                     component: rechange,
                     meta: {
                         requireAuth: true
-                    },
-			}
+                    }
+			},
+				{
+                    path: '/account/sublog',
+                    name: 'sublog',
+                    component: sublog,
+                    meta: {
+                        requireAuth: true
+                    }
+				}
+				,
+		
 		]
     }, {
             path: '/tender',

@@ -3,6 +3,13 @@
   <div class="header">
 	<my-header></my-header>
   </div>
+    <el-dialog
+	  :visible.sync="$store.state.imgloading"
+	  width='30%'
+	  >
+<!--          <div>小涛涛真可爱</div>-->
+	 <img :src="$store.state.bigimg" alt="" style='width:100%'>
+	</el-dialog>
 	<router-view></router-view>
 	<div class="footer">
 		<my-footer></my-footer>

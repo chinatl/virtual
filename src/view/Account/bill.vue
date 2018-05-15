@@ -126,7 +126,7 @@
 					data: {
 						pageNo: this.pageNo,
 						pageSize: this.pageSize,
-						currId: this.formInline.currId,
+						tradeMarket: this.formInline.currId,
 						billType: this.formInline.billType,
 					},
 					success: res => {
@@ -158,13 +158,13 @@
 					if (res.code === 0) {
 						this.options = res.data.map(res => {
 							return {
-								value: res.id,
-								label: res.shortName
+								value: res.tradeMarket,
+								label: res.tradeMarket
 							}
 						});
 						this.options.unshift({
 							value: '',
-							label: '全部币种'
+							label: '全部市场'
 						})
 					} else {
 						this.$message({

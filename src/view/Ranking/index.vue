@@ -27,7 +27,9 @@
 						<el-button type='primary' @click='opendialog(i)'>{{$t('ranking["查看全部"]')}}</el-button>
 					  </div>
 					  <h3 class="h3_title">{{i.vName}}</h3>
-					  <p class="p_title">{{$t('ranking["排名"]')}}：- {{$t('ranking["预计奖励"]')}}({{i.BBB}})：-</p>
+					  <div class="p_title">
+					  	<p v-show='getuser(i)'>{{$t('ranking["排名"]')}}：{{getRank(i)}} {{$t('ranking["预计奖励"]')}}({{getPrice(i)}})：- <el-button size='mini' type='success'  @click='receive(i)'>领取</el-button></p>
+					  </div>
 				  </div>
 				  <div>
 					<el-table
@@ -38,25 +40,25 @@
 						prop="address"
 						align='center'
 						:label="$t(`ranking['排名']`)"
-						width='56'>
-						<template slot-scope="scope" >
-							<span>{{scope.$index + 1}}</span>
-						</template>
+						width='54'>
+							<template slot-scope="scope">
+								<span>{{scope.$index + 10}}</span>
+							</template>
 </el-table-column>
 <el-table-column align='center' label="UID" width='64'>
 	<template slot-scope="scope">
 														<span>{{scope.row.uid}}</span>
 													</template>
 </el-table-column>
-<el-table-column align='center' :label="$t(`ranking['用户昵称']`)">
+<el-table-column align='center' :label="$t(`footer['用户昵称']`)">
 	<template slot-scope="scope">
     <span>{{scope.row.nickName}}</span>
     </template>
 </el-table-column>
 <el-table-column align='right' :label="$t(`ranking['交易额']`)">
 	<template slot-scope="scope">
-														<span>{{scope.row.sumAmount}}</span>
-													</template>
+		<span>{{scope.row.sumAmount}}</span>
+	</template>
 </el-table-column>
 <el-table-column align='right' :label="$t(`ranking['预计奖励']`)">
 	<template slot-scope="scope">
@@ -151,7 +153,36 @@
 		},
 
 		methods: {
-			receive(userId, i, index) {
+			getRank(item) {
+				var rank = item.rank;
+				for (var i = 0; i < rank.length; i++) {
+					if (this.$store.state.user.id === rank[i].userId) {
+						return (i + 1)
+					}
+				}
+				return '-'
+			},
+			getPrice(item) {
+				var rank = item.rank;
+				for (var i = 0; i < rank.length; i++) {
+					if (this.$store.state.user.id === rank[i].userId) {
+						return this.get_gift(i, item)
+					}
+				}
+				return '-'
+			},
+			getuser(item) {
+				var rank = item.rank;
+				for (var i = 0; i < rank.length; i++) {
+					if (this.$store.state.user.id === rank[i].userId) {
+						return true
+					}
+				}
+				return false;
+
+			},
+			receive(item) {
+				var giveAmount = this.getPrice(item)
 				if (this.$store.state.isLogin + '' === 'null') {
 					this.$alert('您未登陆，请登录后重试', {
 						confirmButtonText: '确定',
@@ -164,39 +195,57 @@
 					});
 					return
 				}
-				this.loading = true;
-				Post({
-					url: 'basisMarket/receiveAward',
-					data: {
-						userId: userId,
-						giveAmount: this.get_gift(index, i),
-						giveVirtualCurrencyId: i.vId
-					},
-					success: res => {
-						this.loading = false;
-						if (res.code === 0) {
-							this.$message({
-								type: 'success',
-								message: res.data
-							});
-						} else {
-							this.$message({
-								type: 'error',
-								message: res.data
-							});
+				this.$confirm('确认领取吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.loading = true;
+					Post({
+						url: 'basisMarket/receiveAward',
+						data: {
+							userId: this.$store.state.user.id,
+							giveAmount: giveAmount,
+							giveVirtualCurrencyId: item.vId,
+							tradeMarket: item.vName +'_' + this.nav_data[this.current].vName
+						},
+						success: res => {
+							this.loading = false;
+							if (res.code === 0) {
+								this.$message({
+									type: 'success',
+									message: res.data
+								});
+							} else {
+								this.$message({
+									type: 'error',
+									message: res.data
+								});
+							}
+						},
+						fail: res => {
+							this.loading = false;
 						}
-					},
-					fail: res => {
-						this.loading = false;
-					}
-				})
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});
+				});
+
 			},
 			get_gift(index, i) {
-				console.log(index, i)
 				if (index < 3) {
 					return i.cardinal1_3 - index * i.decrease1_3
 				} else if (i >= 3 && i < 10) {
 					return i.cardinal4_10 - (index - 3) * i.decrease4_10
+				} else if (i >= 10 && i < 20) {
+					return i.cardinal11_20 - (index - 10) * i.decrease11_20
+				} else if (i >= 20 && i < 50) {
+					return i.cardinal21_50 - (index - 20) * i.decrease21_50
+				} else if (i >= 50 && i < 100) {
+					return i.cardinal51_100 - (index - 50) * i.decrease51_100
 				}
 			},
 			checkout_item(item, index) {
@@ -765,7 +814,8 @@
 
 	.box-card .p_title {
 		font-size: 12px;
-		color: #ccc
+		color: #ccc;
+		height: 28px;
 	}
 
 	div.el-card__body {

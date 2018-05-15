@@ -11,6 +11,7 @@
 						{{ current === 4 ? $t(`account['提币']`) :null}}
 						{{ current === 5 ? $t(`account['综合账单']`) :null}}
 						{{ current === 6 ? $t(`account['委托记录']`) :null}}
+						{{ current === 7 ? $t(`account['认购记录']`) :null}}
 					</p>
 				</div>
 				<ul id="user-menu" class="menu">
@@ -32,6 +33,9 @@
 					<li @click='current = 6' :class="current ===6?'active':''" >
 						<router-link to='/account/log'>{{$t('account["委托记录"]')}}</router-link>
 					</li>
+					<li @click='current = 7' :class="current === 7?'active':''" >
+						<router-link to='/account/sublog'>{{$t('account["认购记录"]')}}</router-link>
+					</li>
 				</ul>
 			</div>
 			<transition name="fade" mode="out-in">
@@ -48,6 +52,9 @@
                 current: 0
             }
         },
+		watch:{
+			
+		},
         created() {
             var this_path = this.$route.path;
             if (this_path === '/account/capital') {

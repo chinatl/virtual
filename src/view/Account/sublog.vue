@@ -3,23 +3,7 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">委托记录</span>
-			<div  style="float: right;margin-top:-9px">
-				 <el-select v-model="formInline.teadeMarket" 
-				 style='width:240px;margin-right:20px'
-				 @change='init'
-				 size='small'
-				 filterable>
-				     <el-option key='' value='' label='全部市场'></el-option>
-					<el-option
-					  v-for="item in options"
-					  :key="item.tradeMarket"
-					  :label="item.tradeMarket"
-					  :value="item.tradeMarket">
-					</el-option>
-				  </el-select> 
-				  </el-select>
-			</div>
+		  	<span style="font-size:14px;font-weight:bold">认购记录</span>
 		  </div>
 		  <div class="select">
 		 	<el-table :data="list" 
@@ -29,51 +13,34 @@
 				 border
 			   :default-sort = "{prop: 'date', order: 'descending'}"
 				style="width: 100%;">
-					<el-table-column align="center" label="时间">
-						<template slot-scope="scope" >
-						<span>{{scope.row.lastUpdateTime | parseTime('{y}-{m}-{d}')}}</span>
+				
+<el-table-column align="center" label="用户昵称" width='200'>
+    <template slot-scope="scope">
+						<span>{{scope.row.nickName}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="市场" width='200'>
+<el-table-column align="center" label="认购币名称">
     <template slot-scope="scope">
-						<span>{{scope.row.tradeMarket}}</span>
+						<span>{{scope.row.shortName}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="委托价/成交均价">
+<el-table-column align="center" label="每天认购份数" prop='date' >
     <template slot-scope="scope">
-						<span>{{scope.row.averagePrize}}</span>
+							<span>{{scope.row.evrdayCopies}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="委托类型" prop='date' width='150'>
+<el-table-column align="center" label="认购份数">
     <template slot-scope="scope">
-							<span>{{scope.row.entrustType ? '卖出' : '买入'}}</span>
+							<span>{{scope.row.virtualCopies}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="剩余可交易的数量">
+<el-table-column align="center" label="当天时间">
     <template slot-scope="scope">
-							<span>{{scope.row.leftAmount}}</span>
-						</template>
-</el-table-column>
-<el-table-column align="center" label="成交总金额">
-    <template slot-scope="scope">
-							<span>{{scope.row.leftCount}}</span>
-						</template>
-</el-table-column>
-<el-table-column align="center" label="订单状态">
-    <template slot-scope="scope">
-            <span>
-                {{scope.row.poolStatus === 0 ? '未成交' : null}}
-                {{scope.row.poolStatus === 1 ? '完全成交' : null}}
-                {{scope.row.poolStatus === 2 ? '部分成交' : null}}
-                {{scope.row.poolStatus === 3 ? '用户撤销' : null}}
-            </span>
-						</template>
+		<span>{{scope.row.thedayTime |parseTime( '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+	</template>
 </el-table-column>
 </el-table>
-<div class="block" style="text-align:right;margin:10px 0">
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" background :current-page="formInline.pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="formInline.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-    </el-pagination>
-</div>
+
 </div>
 </el-card>
 </div>
@@ -102,15 +69,7 @@
             }
         },
         created() {
-            Get({
-                url: 'pool/findAllTradeMarket',
-                success: res => {
-                    if (res.code === 0) {
-                        this.options = res.data;
-                        this.init()
-                    }
-                }
-            })
+            this.init()
         },
         methods: {
             onSubmit() {
@@ -125,18 +84,12 @@
             init() {
                 this.loading = true;
                 Get({
-                    url: 'pool/selPool',
-                    data: {
-                        teadeMarket: this.formInline.teadeMarket,
-                        pageNo: this.formInline.pageNo,
-                        pageSize: this.formInline.pageSize,
-                        lishi: this.formInline.lishi,
-                    },
+                    url: 'userSubscription/findAllUserSubscriptionById',
+                 
                     success: res => {
                         this.loading = false;
                         if (res.code === 0) {
                             this.list = res.data;
-                            this.total = res.total;
                         }
                     },
                     fail: res => {

@@ -3,15 +3,15 @@
 		<div class="con tender">
 			<div class="fl item">
 				<ul>
-					<li class="title">交易</li>
-					<li><router-link to='/tender/buy'>买入</router-link></li>
-					<li v-if='$store.state.user.isMerchant === 2'><router-link to='/tender/sell'>买出</router-link></li>
+					<li class="title">{{$t(`footer['交易']`)}}</li>
+					<li><router-link to='/tender/buy'>{{$t(`footer['买入']`)}}</router-link></li>
+					<li><router-link to='/tender/sell'>{{$t(`footer['买出']`)}}</router-link></li>
 <!--					<li><router-link to='/tender/resolve'>确认订单</router-link></li>-->
-					<li class="title">个人中心</li>
-					<li><router-link to='/tender/order'>我的订单</router-link></li>
-					<li><router-link to='/tender/data'>我的资料</router-link></li>
+					<li class="title">{{$t(`footer['个人中心']`)}}</li>
+					<li><router-link to='/tender/order'>{{$t(`footer['我的订单']`)}}</router-link></li>
+					<li><router-link to='/tender/data'>{{$t(`footer['我的资料']`)}}</router-link></li>
 				</ul>
-				<el-button @click.native='push_data' v-if='$store.state.user.isMerchant === 1 || $store.state.user.isMerchant === 0|| $store.state.user.isMerchant === 3' style='width:100%;margin-top:10px;background-color:orange;color:#fff;font-weight:bold'>申请商家</el-button>
+				<el-button @click.native='push_data' v-if='$store.state.user.isMerchant === 1 || $store.state.user.isMerchant === 0|| $store.state.user.isMerchant === 3' style='width:100%;margin-top:10px;background-color:orange;color:#fff;font-weight:bold'>{{$t(`footer['申请商家']`)}}</el-button>
 			</div>
 			<div class="fr item-page">
 				<transition name="fade" mode="out-in">

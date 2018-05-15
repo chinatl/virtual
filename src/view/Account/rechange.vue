@@ -238,7 +238,8 @@
                         if (res.code === 0) {
                             this.address = res.data
                         } else {
-                            this.address = res.data
+                            this.address = res.data;
+							console.log(res)
                             this.$message({
                                 showClose: true,
                                 message: res.data,

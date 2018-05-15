@@ -7,7 +7,13 @@ Vue.use(Vuex)
 import Post from '@/api/post'
 const store = new Vuex.Store({
 	state: {
-		user: {},
+		user: {
+			lt: {
+
+			}
+		},
+		imgloading: false,
+		bigimg: '',
 		isLogin: null,
 		userAccount: [],
 		name: '0',
@@ -163,6 +169,10 @@ const store = new Vuex.Store({
 				}]
 	},
 	mutations: {
+		open_img: (state, src) => {
+			state.bigimg = src;
+			state.imgloading = true;
+		},
 		SET_TYPEN: (state, data) => {
 			state.isLogin = true;
 			state.user.mainUsersId = data.mainUsersId + '';

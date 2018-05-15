@@ -20,15 +20,8 @@
 			</div>
 			<div class="form-group" v-if='!userCode'>
 				<div id="passwordForm" class="form-control">
-				<input autocomplete="new-password" :placeholder="$t(`login['登录密码']`)" @keypress.enter='submit' type="password"  v-model='form.password'/>
+					<input autocomplete="new-password" :placeholder="$t(`login['登录密码']`)" @keypress.enter='submit' type="password"  v-model='form.password'/>
 				 </div>
-			</div>
-			<div  class="form-group" v-if='userCode'>
-				<div  class="form-control">
-					<input autocomplete="off" :placeholder="$t(`login['输入手机验证码']`)" type="text" v-model='form.loginphone'/>
-					<!---->
-					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_lophone_number'>{{$t('login["获取验证码"]')}}</el-button>
-				</div>
 			</div>
 			<div  class="form-group" v-if='user.isphone'>
 				<div  class="form-control">
@@ -49,7 +42,24 @@
 					<input autocomplete="off" :placeholder="$t(`login['输入google验证码']`)" type="text" v-model='form.google'/>
 					<!---->
 				</div>
+			</div>	
+			<div  class="form-group" >
+				<div  class="form-control">
+					<input autocomplete="off" :placeholder="$t(`login['输入图形验证码']`)" type="text" v-model='indent' @keypress.enter='submit'/>
+					<div class="identity-input" @click="refreshCode" :contentHeight='44' :fontSizeMin='18'>
+						<identity :identifyCode="identifyCode"></identity>
+					</div>
+					<!---->
+				</div>
 			</div>
+			<div  class="form-group" v-if='userCode'>
+				<div  class="form-control">
+					<input autocomplete="off" :placeholder="$t(`login['输入手机验证码']`)" type="text" v-model='form.loginphone' />
+					<!---->
+					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_lophone_number'>{{$t('login["获取验证码"]')}}</el-button>
+				</div>
+			</div>
+			
 			<div class="form-button"><button type="button" class="button" @click='login'><span>{{$t('login["登录"]')}}</span></button></div>
 			<div class="form-other">{{$t('login["还没账号"]')}}？<router-link to="/register">{{$t('login["立即注册"]')}}</router-link></div>
 		</div>
@@ -61,16 +71,19 @@
 	import myCanvas from './canvas'
 	import Post from '@/api/post'
 	import MD5 from 'js-md5'
+	import identity from '@/components/identity'
 	import {
 		Loading
 	} from 'element-ui';
 	export default {
 		components: {
-			myCanvas
+			myCanvas,
+			identity
 		},
 		data() {
 			return {
 				userCode: false,
+				indent:'',
 				form: {
 					userName: '',
 					password: '',
@@ -94,10 +107,31 @@
 					isphone: null,
 				},
 				get_user: false,
-				user_phone: null
+				user_phone: null,
+				identifyCodes: "1234567890",
+				identifyCode: ""
 			}
 		},
+		mounted() {
+			this.identifyCode = "";
+			this.makeCode(this.identifyCodes, 4);
+		},
 		methods: {
+			randomNum(min, max) {
+				return Math.floor(Math.random() * (max - min) + min);
+			},
+			refreshCode() {
+				this.identifyCode = "";
+				this.makeCode(this.identifyCodes, 4);
+			},
+			makeCode(o, l) {
+				for (let i = 0; i < l; i++) {
+					this.identifyCode += this.identifyCodes[
+						this.randomNum(0, this.identifyCodes.length)
+					];
+				}
+				console.log(this.identifyCode);
+			},
 			click_nouse_code() {
 				this.userCode = false;
 			},
@@ -222,6 +256,16 @@
 				}
 			},
 			get_lophone_number() {
+				if (this.identifyCode !== this.indent) {
+					this.$message({
+						showClose: true,
+						message: '验证码输入错误',
+						type: 'error'
+					});
+					this.indent = '';
+					this.refreshCode();
+					return
+				}
 				this.get_verification('getVerificationCode', {
 					userName: this.form.userName,
 					title: '登录验证'
@@ -246,6 +290,16 @@
 						message: '输入内容有误',
 						type: 'error'
 					});
+					return
+				}
+				if (this.identifyCode !== this.indent) {
+					this.$message({
+						showClose: true,
+						message: '验证码输入错误',
+						type: 'error'
+					});
+					this.indent = '';
+					this.refreshCode();
 					return
 				}
 				if (this.userCode && !this.form.loginphone) {
@@ -286,7 +340,7 @@
 								})
 								this.$message({
 									showClose: true,
-									message: '登陆成功',
+									message: '登录成功',
 									type: 'success'
 								});
 							} else {
@@ -330,7 +384,7 @@
 												});
 												this.$message({
 													showClose: true,
-													message: '登陆成功',
+													message: '登录成功',
 													type: 'success'
 												});
 											} else {
@@ -420,10 +474,18 @@
 
 </script>
 <style scoped="true">
+	.identity-input {
+		position: absolute;
+		top: 2px;
+		right: 0;
+		cursor: pointer
+	}
+
 	.login-title {}
 
 	.login-title span {
 		width: 40%;
+		height: 42px;
 		text-align: center;
 		display: inline-block;
 		cursor: pointer;

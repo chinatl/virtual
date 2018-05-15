@@ -1,19 +1,24 @@
 <template>
 <header id="user-nav" class="header">
 	<div class="e-notice" v-show='current'>
-		<router-link  to="/blog" class="text" style='font-size:14px'>{{$t('menu["提示"]')}}</router-link>
+		<router-link  to="/blog" class="text" style='font-size:14px'>
+			{{!data.length ? '暂无内容！' : data[0].notice}}
+		</router-link>
 		<i class="el-icon-close" @click='current = false'></i>
 	</div>
 	<div :class=" $route.path === '/' ? 'flags h-content' : 'h-content' ">
 		<div class="h-box">
 			<div class="subscription">
-				<router-link to='/' style='font-size:14px'>{{$t('menu["主页"]')}}</router-link>
+				<router-link to='/' style='font-size:14px'>
+<!--					{{$t('menu["主页"]')}}-->
+					<img :src="require('@/assets/xlogo.png')" alt="" style='height:50px;'>
+				</router-link>
 			</div>
 			<div class="subscription" style="margin-left: 20px;">
 				<a href="./trade"  style='font-size:14px'>{{$t('menu["专业交易"]')}}</a>
 			</div>
-			<div class="subscription" style="margin-left: 20px;">
-				<p role="button"><router-link to='/ranking' style='font-size:14px'>{{$t('menu["交易排行榜"]')}}</router-link></p>
+			<div class="subscription" style="margin-left: 20px;" v-show='$store.state.isLogin'>
+				<p role="button"><router-link to='/tender/buy' style='font-size:14px'>{{$t('account["法币交易"]')}}</router-link></p>
 			</div>
 			<div class="site-menu cart">
 				<p role="button">{{$t('menu["网站导航"]')}}</p>
@@ -135,10 +140,22 @@
 				}, {
 					value: 'zh_TW',
 					label: this.$t('menu["繁体中文"]')
-				}]
+				}],
+				data:[]
 			}
 		},
 		created() {
+			Get({
+				url: 'notice/findAll',
+				success: res => {
+					if (res.code === 0) {
+						this.data = res.data;
+					} 
+				},
+				fail: res => {
+					this.loading = false;
+				}
+			})
 			this.label = this.language.filter(res => {
 				if (res.value == this.$i18n.locale) {
 					return true
