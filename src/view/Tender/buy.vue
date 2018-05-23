@@ -273,7 +273,7 @@
 					});
 					return
 				}
-				console.log(this.form.payment)
+				
 				this.dialogFormVisible = false;
 				this.titleForm = true;
 				this.remark = Math.floor(Math.random() * 90000 + 10000);

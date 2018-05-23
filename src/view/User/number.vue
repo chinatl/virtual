@@ -1,5 +1,5 @@
 <template>
-<div class="pay_panel"  v-loading.fullscreen.lock="fullscreenLoading">
+<div class="pay_panel"  v-loading="fullscreenLoading">
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
@@ -11,16 +11,16 @@
 						<img src="" alt="">
 					</div>
 					<div class="info">
-						<p>{{$store.state.user.nickName}}<span class="orange" @click='edit_user($store.state.user)'>{{$t('user["编辑"]')}}</span></p>
+						<p>{{$store.state.user.nickName}}<span class="orange" @click.stop='edit_user($store.state.user,$event)'>{{$t('user["编辑"]')}}</span></p>
 						<p>{{$store.state.user.phone}}</p>
 					</div>
 				</div>
-				<div :class="index === nowUser ? 'users current':'users'" v-for='(item,index) in $store.state.userAccount'>
+				<div :class="index === nowUser ? 'users current':'users'" v-for='(item,index) in $store.state.userAccount' style='cursor: pointer;' @click='check_login(item.id,$event)'>
 					<div class="avatar">
 						<img src="" alt="">
 					</div>
 					<div class="info">
-						<p>{{item.nickName}}<span class="orange" @click='edit_user(item)'>{{$t('user["编辑"]')}}</span></p>
+						<p>{{item.nickName}}<span class="orange" @click.stop='edit_user(item,$event)'>{{$t('user["编辑"]')}}</span></p>
 						<p>{{item.phone}}</p>
 					</div>
 				</div>	
@@ -123,25 +123,25 @@
 							<div class="l">
 								<h3>{{$t('user["初级认证"]')}}</h3>
 								<p>
-							    	<span class="auth" v-if='$store.state.user.realName'>{{$t('user["已设置"]')}}</span> 
-									<span class="not-auth" v-if='!$store.state.user.realName'>{{$t('user["未认证"]')}}</span>
+							    	<span class="auth" v-if='check1()'>{{$t('user["已设置"]')}}</span> 
+									<span class="not-auth" v-if='!check1()'>{{$t('user["未认证"]')}}</span>
 									<!---->
 									<!---->
 								</p>
 							</div>
-							<div class="r" @click='open_primary'><a>{{ $store.state.user.realName ? $t('user["修改"]') : $t('user["认证"]')}}</a></div>
+							<div class="r" @click='open_primary'><a>{{ check1() ? $t('user["查看"]') : $t('user["认证"]')}}</a></div>
 						</li>
 						<li>
 							<div class="l">
 								<h3>{{$t('user["高级认证"]')}}</h3>
 								<p>
-							    	<span class="auth" v-if='$store.state.user.certificatePath1 && $store.state.user.certificatePath2 && $store.state.user.certificatePath3 '>{{$t('user["已设置"]')}}</span>
-									<span class="not-auth" v-if='!$store.state.user.certificatePath1 || !$store.state.user.certificatePath2 || !$store.state.user.certificatePath3 '>{{$t('user["未认证"]')}}</span>
+							    	<span class="auth" v-if='check2()'>{{$t('user["已设置"]')}}</span>
+									<span class="not-auth" v-if='!check2()'>{{$t('user["未认证"]')}}</span>
 									<!---->
 									<!---->
 								</p>
 							</div>
-							<div class="r" @click='open_senior'><a>{{ $store.state.user.certificatePath1 && $store.state.user.certificatePath2 && $store.state.user.certificatePath3 ? $t('user["修改"]') : $t('user["认证"]')}}</a></div>
+							<div class="r" @click='open_senior'><a>{{ check2()? $t('user["查看"]') : $t('user["认证"]')}}</a></div>
 						</li>
 					</ul>
 				</div>
@@ -150,14 +150,14 @@
 	</div>
 <el-dialog
 	:title="$t(`user['高级认证']`)"
-:visible.sync="SeniorVisible"
-@close='primary_form={}'
-width="40%"
+	:visible.sync="SeniorVisible"
+	@close='primary_form={}'
+	width="40%"
 >
 	<el-form  label-width="200px">
 		<el-form-item label='身份证人像面:'>
 			<div class="upload-imgList" v-show='headPortrait'>
-				<i class="el-icon-close"  @click='delimg1'></i>
+				<i class="el-icon-close"  @click='delimg1' v-if='!check2()'></i>
 				<img :src="headPortrait" alt="">
 			</div>
 			<el-upload
@@ -174,7 +174,7 @@ width="40%"
 		</el-form-item>
 		<el-form-item label='身份证国徽面:'>
 			<div class="upload-imgList" v-show='nationalEmblem'>
-				<i class="el-icon-close" @click='delimg2'></i>
+				<i class="el-icon-close" @click='delimg2' v-if='!check2()'></i>
 				<img :src="nationalEmblem" alt="">
 			</div>
 			<el-upload
@@ -191,7 +191,7 @@ width="40%"
 		</el-form-item>
 		<el-form-item label='身份证人像面:'>
 			<div class="upload-imgList" v-show='people'>
-				<i class="el-icon-close" @click='delimg3'></i>
+				<i class="el-icon-close" @click='delimg3' v-if='!check2()'></i>
 				<img :src="people" alt="">
 			</div>
 			<el-upload
@@ -206,13 +206,14 @@ width="40%"
 			  <i class="el-icon-plus"></i>
 			</el-upload>
 		</el-form-item>
-				<el-form-item>
+		<el-form-item v-if='!check2()'>
 			<el-button @click="cancel_pwd">{{$t('user["取消"]')}}</el-button>
 			<el-button type="primary" @click="submit_upload_img">{{$t('user["提交"]')}}</el-button>
 		</el-form-item>
 	</el-form>
 	
 </el-dialog>
+
 <el-dialog
 :title="$t(`user['初级认证']`)"
 :visible.sync="PrimaryVisible"
@@ -222,13 +223,13 @@ width="30%"
 >
 	<el-form :model="primary_form" label-width="0px">
 		<el-form-item>
-			<el-input v-model="primary_form.realName" :placeholder="$t(`user['真实姓名']`)"></el-input>
+			<el-input v-model="primary_form.realName" :placeholder="$t(`user['真实姓名']`)" :disabled='check1()'></el-input>
 		</el-form-item>
 		<el-form-item>
-			<el-input v-model="primary_form.iDCardNo" :placeholder="$t(`user['身份证号']`)"></el-input>
+			<el-input v-model="primary_form.iDCardNo" :placeholder="$t(`user['身份证号']`)" :disabled='check1()'></el-input>
 		</el-form-item>
-		<p style="color:red;text-align:left;margin:-10px 0 10px 0">请确认填写信息的真实性，否则后果自负！</p>
-		<el-form-item align='center'>
+		<p style="color:red;text-align:left;margin:-10px 0 10px 0" v-if='!check1()'>请确认填写信息的真实性，否则后果自负！</p>
+		<el-form-item align='center' v-if='!check1()'>
 			<el-button @click="cancel_pwd">{{$t('user["取消"]')}}</el-button>
 			<el-button type="primary" @click="submit_primary_email">{{$t('user["提交"]')}}</el-button>
 		</el-form-item>
@@ -532,6 +533,52 @@ width="30%"
 			}
 		},
 		methods: {
+			check_login(id) {
+				this.fullscreenLoading = true;
+				Post({
+					url: 'log/changLogin',
+					data: {
+						id: id
+					},
+					success: res => {
+						this.fullscreenLoading = true;
+						if (res.code == 0) {
+							this.$message({
+								showClose: true,
+								message: '切换成功',
+								type: 'success'
+							});
+							this.init();
+						} else {
+							this.$message({
+								showClose: true,
+								message: res.message,
+								type: 'error'
+							});
+						}
+					},
+					fail: res => {
+						this.fullscreenLoading = true;
+					}
+				})
+
+			},
+			check1() {
+				var user = this.$store.state.user;
+				if (user.realName && user.iDCardNo || this.check2()) {
+					return true
+				} else {
+					return false
+				}
+			},
+			check2() {
+				var lt = this.$store.state.user;
+				if (lt.certificatePath1 && lt.certificatePath2 && lt.certificatePath3) {
+					return true
+				} else {
+					return false
+				}
+			},
 			submit_upload_img() {
 				if (!this.headPortrait || !this.nationalEmblem || !this.people) {
 					this.$message({
@@ -592,6 +639,7 @@ width="30%"
 					success: res => {
 						this.fullscreenLoading = false;
 						if (res.code === 0) {
+							this.user_account = res.data;
 							this.$store.commit('SET_TYPEN', res.data);
 						} else {
 							this.$router.push({
@@ -760,7 +808,6 @@ width="30%"
 			},
 			/*封装提交变更*/
 			submit_verification(url, data, dialog) {
-				console.log(data)
 				for (var k in data) {
 					if (data[k] === '') {
 						this.$message({
@@ -828,10 +875,13 @@ width="30%"
 				this.PrimaryVisible = false;
 				this.SeniorVisible = false;
 			},
-			edit_user(data) {
+			edit_user(data, event) {
 				this.user_dialog = true;
 				this.username_form.id = data.id;
 				this.username_form.nickName = data.nickName;
+				event.preventDefault = true; //阻止默认事件（原生方法）
+				event.stop; //阻止冒泡（原声方法）
+				return false
 			},
 			/*开启 or 关闭邮箱登录登录验证*/
 			oc_get_email_verification() {
@@ -961,7 +1011,7 @@ width="30%"
 			}
 		},
 		created() {
-			//			this.init()
+						this.init()
 		}
 
 	}
@@ -1179,6 +1229,7 @@ width="30%"
 
 	.introduce p.red {
 		color: rgb(255, 0, 0);
+
 	}
 
 </style>

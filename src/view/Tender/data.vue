@@ -34,7 +34,11 @@
 		<div class="account-bind">
 			<div class="bind-item">
 				<div class="bind-in"><span class="bind-title">{{$t(`footer['实名认证']`)}}</span>
-					<p class="bind-desc">{{$t(`footer['您已经']`)}}</p> <span class="btn bind">{{$t(`footer['已认证']`)}}</span></div>
+					<p class="bind-desc" v-if='$store.state.user.realName'>{{$t(`footer['您已经']`)}}</p>
+					<p class="bind-desc" v-if='!$store.state.user.realName'>{{$t(`footer['未认证']`)}}</p>
+				 	<span class="btn bind"  v-if='$store.state.user.realName'>{{$t(`footer['已认证']`)}}</span>	
+				 	<router-link to='/user/number' class="nobind"  v-if='!$store.state.user.realName' style='margin-left:10px'>{{$t(`footer['未认证']`)}}</router-link> 
+				 </div>	
 				<!---->
 			</div>
 			<div class="bind-item">

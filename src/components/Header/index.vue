@@ -10,15 +10,15 @@
 		<div class="h-box">
 			<div class="subscription">
 				<router-link to='/' style='font-size:14px'>
-<!--					{{$t('menu["主页"]')}}-->
-					<img :src="require('@/assets/xlogo.png')" alt="" style='height:50px;'>
+					{{$t('menu["主页"]')}}
+<!--					<img :src="require('@/assets/xlogo.png')" alt="" style='height:50px;'>-->
 				</router-link>
 			</div>
 			<div class="subscription" style="margin-left: 20px;">
 				<a href="./trade"  style='font-size:14px'>{{$t('menu["专业交易"]')}}</a>
 			</div>
-			<div class="subscription" style="margin-left: 20px;" v-show='$store.state.isLogin'>
-				<p role="button"><router-link to='/tender/buy' style='font-size:14px'>{{$t('account["法币交易"]')}}</router-link></p>
+			<div class="subscription" style="margin-left: 20px;" >
+				<p role="button"><router-link to='/ranking' style='font-size:14px'>{{$t('menu["交易排行榜"]')}}</router-link></p>
 			</div>
 			<div class="site-menu cart">
 				<p role="button">{{$t('menu["网站导航"]')}}</p>

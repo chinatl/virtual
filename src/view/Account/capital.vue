@@ -5,7 +5,9 @@
 			<div slot="header" class="clearfix">
 				<span style="font-size:14px;font-weight:bold">{{$t('account["资金"]')}}	</span>
 				<div style="float: right;">
-					折算总金额(CNY) <span style='margin-left:20px'>VIP等级</span>
+					<span style='margin-right:20px;font-size:14px'>账户资产价值：{{now_money}} CNY</span>
+<!--					折算总金额(CNY) <span style='margin-left:20px'>VIP等级</span>-->
+					<el-switch v-model='show0'  @change='checkout'></el-switch><span style="margin-left:10px">隐藏小额资产</span>
 				</div>
 			</div>
 			<div class="select">
@@ -14,13 +16,15 @@
 				style="width: 100%;">
 					<el-table-column align="center" :label="$t(`account['币种']`)">
 						<template slot-scope="scope">
-					<span>{{scope.row.shortName && scope.row.shortName.toUpperCase()}}</span>
-					</template>
+							<span style='text-align:left;width:60px;display:inline-block'>
+								<img :src="scope.row.markUrl" alt="" style='width:25px;vertical-align:bottom;margin-right:10px'><span>{{scope.row.shortName && scope.row.shortName.toUpperCase()}}</span>
+							</span>
+						</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['总额']`)" width='200'>
 	<template slot-scope="scope">
-	<span>{{scope.row.vTotal + scope.row.frozenTotal}}</span>
-	</template>
+						<span>{{scope.row.vTotal + scope.row.frozenTotal}}</span>
+						</template>
 </el-table-column>
 <!--
 <el-table-column align="center" :label="$t(`account['折算总金额']`)">
@@ -45,16 +49,16 @@
         <span class="cap_no_current" v-if='!$store.state.userAccount.length'>{{$t('account["划入"]')}}</span>
         <span class="cap_current" @click='draw(scope.row)' v-if='scope.row.vTotal && $store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
         <span class="cap_no_current" v-if='!scope.row.vTotal || !$store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
-        <span :class="scope.row.isTopUp ? 'cap_no_current' : 'cap_current' ">
-                <router-link to='/account/rechange' v-if='!scope.row.isTopUp'>{{$t('account["充值"]')}}</router-link>
-                <span v-if='scope.row.isTopUp'>{{$t('account["充值"]')}}</span>
+        <span :class="scope.row.isTopUp || $store.state.user.mainUsersId ? 'cap_no_current' : 'cap_current' ">
+                <router-link :to='"/account/rechange?shortName="+scope.row.shortName' v-if='!scope.row.isTopUp &&  !$store.state.user.mainUsersId '>{{$t('account["充值"]')}}</router-link>
+                <span v-if='scope.row.isTopUp || $store.state.user.mainUsersId'>{{$t('account["充值"]')}}</span>
         </span>
-        <span :class="scope.row.isWithdrawal || !scope.row.vTotal ? 'cap_no_current' : 'cap_current' ">
-            <router-link to='/account/currency' v-if='!scope.row.isWithdrawal'>{{$t('account["提币"]')}}</router-link>
-            <span v-if='scope.row.isWithdrawal'>{{$t('account["提币"]')}}</span>
+        <span :class="scope.row.isWithdrawal || $store.state.user.mainUsersId || !scope.row.vTotal ? 'cap_no_current' : 'cap_current' ">
+            <router-link to='/account/currency' v-if='!scope.row.isWithdrawal && !$store.state.user.mainUsersId '>{{$t('account["提币"]')}}</router-link>
+            <span v-if='scope.row.isWithdrawal  || $store.state.user.mainUsersId'>{{$t('account["提币"]')}}</span>
         </span>
         <span class="cap_current">
-             <router-link to='/account/bill'>{{$t('account["账单"]')}}</router-link>
+             <router-link :to='"/account/bill?shortName="+scope.row.shortName'>{{$t('account["账单"]')}}</router-link>
          </span>
     </template>
 </el-table-column>
@@ -62,7 +66,7 @@
 </div>
 </el-card>
 </div>
-<el-dialog title="内部划账" :visible.sync="dialogFormVisible" width='40%' @close='clearInput'>
+<el-dialog title="内部划账" :visible.sync="dialogFormVisible" width='60%' @close='clearInput'>
 	<div class='included'>
 		<div class="include-item">
 			<div class="img"></div>
@@ -71,7 +75,7 @@
 					<div class="el-dropdown-link">
 						<h3 style="width:100%;z-index:100">{{included_moren.nickName}}</h3>
 						<p>可用{{now_market}}：{{number}}</p>
-						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-30px;top:0;z-index:20"></i>
+						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-80px;top:0;z-index:20"></i>
 					</div>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item :command="index" v-for='(item,index) in userArr'>{{item.nickName}}</el-dropdown-item>
@@ -101,7 +105,7 @@
 	</el-form>
 </el-dialog>
 <!--转出到-->
-<el-dialog title="内部划账" :visible.sync="draw_dialog" width='40%' @close='clearInput'>
+<el-dialog title="内部划账" :visible.sync="draw_dialog" width='60%' @close='clearInput'>
 	<div class='included'>
 		<div class="include-item" style="border:2px dashed #d7d9dc">
 			<div class="img"></div>
@@ -118,7 +122,7 @@
 					<div class="el-dropdown-link">
 						<h3>{{included_moren.nickName}}</h3>
 						<p>可用{{now_market}}：{{number}}</p>
-						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-30px;top:0;z-index:20"></i>
+						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-80px;top:0;z-index:20"></i>
 					</div>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item :command="index" v-for='(item,index) in userArr'>{{item.nickName}}</el-dropdown-item>
@@ -148,6 +152,7 @@
 	export default {
 		data() {
 			return {
+				show0: false,
 				userArr: [],
 				included_moren: {},
 				draw_moren: {},
@@ -162,25 +167,24 @@
 				fullscreenLoading: false,
 				dialogFormVisible: false,
 				draw_dialog: false,
-				list: [{
-					all: '',
-					del: '',
-					add: '',
-					market: '市场'
-				}],
+				list: [],
+				current_data: [],
 				number: 0,
 				now_market: '',
 				virtualId: '',
-				my_money: 0
+				my_money: 0,
+				now_money: '--'
 			}
 		},
 		created() {
+			this.fullscreenLoading = true;
 			Get({
 				url: 'finance/selvirtualWallet',
 				success: res => {
 					this.fullscreenLoading = false;
 					if (res.code === 0) {
 						this.list = res.data;
+						this.current_data = res.data;
 					} else {
 						this.$message({
 							showClose: true,
@@ -192,11 +196,30 @@
 				fail: res => {
 					this.fullscreenLoading = false;
 				}
+			});
+			Get({
+				url: 'giveConfig/findUserAsset',
+				success: res => {
+					//					this.fullscreenLoading = false;
+					if (res.code === 0) {
+						this.now_money = res.data;
+						//						this.current_data = res.data;
+					} else {
+						this.$message({
+							showClose: true,
+							message: res.data,
+							type: 'error'
+						});
+					}
+				},
+				fail: res => {
+					//					this.fullscreenLoading = false;
+				}
 			})
 			Get({
 				url: 'finance/selUser',
 				success: res => {
-					this.fullscreenLoading = false;
+//					this.fullscreenLoading = false;
 					if (res.code === 0) {
 						this.userArr = res.data;
 						if (res.data.length === 0) {
@@ -213,11 +236,22 @@
 					}
 				},
 				fail: res => {
-					this.fullscreenLoading = false;
+//					this.fullscreenLoading = false;
 				}
 			})
 		},
 		methods: {
+			checkout(e) {
+				if (e) {
+					var arr = this.current_data.filter(res => {
+						return res.vTotal !== 0 || res.frozenTotal !== 0
+					})
+					this.list = JSON.parse(JSON.stringify(arr))
+				} else {
+					this.list = JSON.parse(JSON.stringify(this.current_data))
+				}
+				console.log(this.list)
+			},
 			clearInput() {
 				this.draw_form = {
 					password: '',
@@ -487,7 +521,7 @@
 		position: relative;
 		border-radius: 3px;
 		border: 2px dashed #f9b23c;
-		width: 195px;
+		width: 300px;
 		display: flex;
 	}
 
@@ -534,7 +568,7 @@
 		transform: rotate(-45deg);
 		content: "";
 		position: absolute;
-		right: 0;
+		right: 0px;
 		height: 8px;
 		width: 8px;
 		border-right: 1px solid currentColor;

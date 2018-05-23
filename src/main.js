@@ -27,7 +27,12 @@ Vue.config.productionTip = false
 for (var i = 0; i < store.state.data.length; i++) {
 	store.state.arr[i] = 0;
 }
-
+var address = sessionStorage.getItem('isAddress') + '';
+if (address === 'null') {
+	store.state.isAddress = 'false'
+} else {
+	store.state.isAddress = address;
+}
 /*初适化登录*/
 router.afterEach((to, from) => {
 	if (to.meta.requireAuth) { // 判断该路由是否需要登录权限

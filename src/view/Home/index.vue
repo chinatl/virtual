@@ -14,7 +14,7 @@
 		  </el-carousel>
   		</div>
   		<div class="kline-trend con">
-  			<div>  
+  			<div style='position:relative'>  
 				<div class="con menu menu--prospero">
 					<ul class="menu__list">
 						<li v-for='(item,index) in nav_data'
@@ -23,6 +23,9 @@
 							<a class="menu__link" style="line-height:25px"><img :src="item.markUrl" alt="" class="markUrl" v-if='item.vName !== "我的"'>{{item.vName}}{{$t('home["市场"]')}}</a>
 						</li>
 					</ul>
+				</div>
+				<div class='search_trade'>
+					<el-input placeholder='搜索' v-model='select_son' size='small' @keyup.native='change_sel'></el-input>
 				</div>
   			</div>
   			<div class="trend-chart">
@@ -40,15 +43,18 @@
 							</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" :label="$t(`home['市场']`)">
+<el-table-column align="left" :label="$t(`home['市场']`)">
 	<template slot-scope="scope">
-						<span>{{scope.row.vName}}</span>
+						<span>
+						<img :src="scope.row.markUrl" alt="" style='width:20px;margin-right:6px;vertical-align:top'>
+							{{scope.row.vName}}
+						</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['最新单价']`)">
 	<template slot-scope="scope">
-											<span>{{scope.row.latestPrize}}</span>
-											</template>
+		<span>{{scope.row.latestPrize}}</span>
+	</template>
 </el-table-column>
 
 <el-table-column align="center" :label="$t(`home['24h最大价格']`)">
@@ -130,6 +136,7 @@
 		data() {
 			return {
 				fullscreenLoading: false,
+				select_son: '',
 				loading: false,
 				current: 0,
 				list: [],
@@ -150,15 +157,31 @@
 				nav_data: [],
 				nav: {},
 				myArr: [],
+				current_data: []
 			}
 		},
 		computed: {},
 		methods: {
+			change_sel(e) {
+				var res = e.target.value;
+				if (res) {
+					res = res.toUpperCase()
+					var newArr = [];
+					for (var i = 0; i < this.current_data.length; i++) {
+						if (this.current_data[i].vName.includes(res)) {
+							newArr.push(this.current_data[i]);
+						}
+					}
+					this.list = JSON.parse(JSON.stringify(newArr));
+				} else {
+					this.list = JSON.parse(JSON.stringify(this.current_data));
+				}
+			},
 			pushtrade(row, event, column) {
 				if (!column.label) {
 					return
 				}
-				window.location.href = "./trade?"+row.vName;
+				window.location.href = "./trade?" + row.vName;
 			},
 			showstart(index) {
 				return this.list[index].show
@@ -229,6 +252,7 @@
 								}
 							}
 							this.list = res.data;
+							this.current_data = res.data;
 						} else {
 							this.$message({
 								showClose: true,
@@ -283,6 +307,13 @@
 	@import '../../assets/css/line.css';
 	.layout-home {
 		width: 100%;
+
+	}
+
+	.search_trade {
+		position: absolute;
+		right: 0;
+		top: 24px;
 	}
 
 	.markUrl {
@@ -290,6 +321,7 @@
 		height: 24px;
 		vertical-align: sub;
 		margin-right: 10px;
+
 
 	}
 

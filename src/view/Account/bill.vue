@@ -105,7 +105,8 @@
 					pageNo: 1,
 					pageSize: 5,
 				},
-				total: 5
+				total: 5,
+				shortName:'',
 			}
 		},
 		methods: {
@@ -128,6 +129,7 @@
 						pageSize: this.pageSize,
 						tradeMarket: this.formInline.currId,
 						billType: this.formInline.billType,
+						shortName:this.shortName
 					},
 					success: res => {
 						this.loading = false;
@@ -152,6 +154,8 @@
 
 		},
 		created() {
+//			console.log(this.$route.query.shortName);
+			this.shortName = this.$route.query.shortName;
 			Get({
 				url: 'finance/selvirtualCurrency',
 				success: res => {

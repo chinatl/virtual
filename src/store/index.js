@@ -12,6 +12,7 @@ const store = new Vuex.Store({
 
 			}
 		},
+		isAddress: 'false',
 		imgloading: false,
 		bigimg: '',
 		isLogin: null,

@@ -296,6 +296,7 @@ const en = {
 		"验证码已发送你的手机，请注意查收": " The verifying code has sent your cell phone. Please pay attention to it. "
 	},
 	"user": {
+		"查看": "Look",
 		"用户中心": " User center ",
 		"充值赠送": " Recharge ",
 		"市场交易赠送": " Market exchange ",

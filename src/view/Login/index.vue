@@ -83,7 +83,7 @@
 		data() {
 			return {
 				userCode: false,
-				indent:'',
+				indent: '',
 				form: {
 					userName: '',
 					password: '',
@@ -181,7 +181,7 @@
 					})
 					return
 				}
-
+				console.log(data.userName)
 				if (!this.email_regular.test(data.userName) && !this.phone_regular.test(data.userName)) {
 					this.$message({
 						showClose: true,
@@ -333,6 +333,8 @@
 						},
 						success: res => {
 							if (res.code === 0) {
+								sessionStorage.setItem('isAddress', 'false');
+								this.$store.state.isAddress = 'false';
 								this.$store.commit('SET_TYPEN', res.data);
 								loading.close();
 								this.$router.push({
@@ -344,7 +346,7 @@
 									type: 'success'
 								});
 							} else {
-								this.$message.warning(res.message);
+								this.$message.warning(res.data);
 								loading.close();
 							}
 						},
@@ -354,7 +356,7 @@
 					})
 					return
 				}
-
+				
 				if (!this.get_user) {
 					Post({
 						url: 'log/login',
@@ -365,9 +367,29 @@
 						success: res => {
 							loading.close();
 							if (res.code === 0) {
-								this.get_user = true;
-								this.user_phone = res.data.phone;
-								if (!res.data.isemail && !res.data.isphone && !res.data.isgoogle) {
+								if (res.data.isAddress) {
+									this.get_user = true;
+									var str = res.data.isAddress + '';
+									sessionStorage.setItem('isAddress', str);
+									this.$store.state.isAddress = str;
+									this.$message({
+										showClose: true,
+										message: '您当前是异地登录，请输入验证码',
+										type: 'warning'
+									});
+									var user = res.data.data;
+									if (user.phone) {
+										this.user.isphone = user.phone;
+										this.user_phone = user.phone;
+										return
+									} else {
+										this.user.isgoogle = res.data.data.email;
+										return
+									}
+								}
+								var res_data = res.data.data;
+								this.user_phone = res_data.phone;
+								if (!res_data.isemail && !res_data.isphone && !res_data.isgoogle) {
 									Post({
 										url: 'log/login',
 										data: {
@@ -377,7 +399,10 @@
 										},
 										success: res => {
 											if (res.code === 0) {
-												this.$store.commit('SET_TYPEN', res.data);
+												var str = res.data.isAddress + '';
+												sessionStorage.setItem('isAddress', str);
+												this.$store.state.isAddress = str;
+												this.$store.commit('SET_TYPEN', res.data.data);
 												loading.close();
 												this.$router.push({
 													'path': '/'
@@ -388,7 +413,7 @@
 													type: 'success'
 												});
 											} else {
-												this.$message.warning(res.message);
+												this.$message.warning(res.data);
 												loading.close();
 											}
 										},
@@ -397,9 +422,10 @@
 										}
 									})
 								} else {
-									this.user.isemail = res.data.isemail;
-									this.user.isphone = res.data.isphone;
-									this.user.isgoogle = res.data.isgoogle;
+									this.get_user = true;
+									this.user.isemail = res.data.data.isemail;
+									this.user.isphone = res.data.data.isphone;
+									this.user.isgoogle = res.data.data.isgoogle;
 								}
 							} else {
 								this.$message({
@@ -455,12 +481,15 @@
 						success: res => {
 							loading.close();
 							if (res.code === 0) {
-								this.$store.commit('SET_TYPEN', res.data);
+								var str = res.data.isAddress + '';
+								sessionStorage.setItem('isAddress', str);
+								this.$store.state.isAddress = str;
+								this.$store.commit('SET_TYPEN', res.data.data);
 								this.$router.push({
 									'path': '/'
 								})
 							} else {
-								this.$message.warning(res.message);
+								this.$message.warning(res.data);
 							}
 						},
 						fail: res => {

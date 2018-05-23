@@ -91,6 +91,12 @@
 		<el-form-item :label="$t(`account['金额']`)">
 			<el-input v-model="form.value"></el-input>
 		</el-form-item>
+		<el-form-item :label="$t(`user['手机验证码']`)">
+			<el-input v-model="form.phone"></el-input>
+		</el-form-item>
+		<el-form-item :label="$t(`user['邮箱验证码']`)">
+			<el-input v-model="form.email"></el-input>
+		</el-form-item>
 		<el-form-item>
 			<el-button @click='cancel'>{{$t(`account['取消']`)}}</el-button>
 			<el-button type="primary" @click="onSubmit">{{$t(`account['确定']`)}}</el-button>
@@ -152,6 +158,8 @@
 	export default {
 		data() {
 			return {
+				phone: '',
+				email: '',
 				add_form: {},
 				editVisible: false,
 				options: [],
@@ -174,6 +182,8 @@
 					pageSize: 5,
 				},
 				type: '',
+				phoneCode: '',
+				emailCode: '',
 			}
 		},
 		created() {
@@ -315,7 +325,7 @@
 						} else {
 							this.$message({
 								showClose: true,
-								message: res.message,
+								message: res.data,
 								type: 'error'
 							});
 						}
@@ -326,7 +336,6 @@
 				})
 			},
 			close() {
-				console.log(this)
 				this.dialogFormVisible = false;
 				this.add_form.address = '';
 				this.add_form.remark = '';
@@ -337,44 +346,120 @@
 				this.form = {}
 			},
 			Withdrawals(data) {
-				this.type = data;
+				if (!this.$store.state.user.email || !this.$store.state.user.phone) {
+					this.$message({
+						showClose: true,
+						message: '请去个人中心页面完成手机号或邮箱验证',
+						type: 'error'
+					});
+					return
+				}
 				this.fullscreenLoading = true;
 				Get({
-					url: 'CashAddress/findAllCashAddress',
+					url: 'fb/getTXCode',
 					data: {
-						type: data
+						phoneCode: '86' + this.$store.state.user.phone,
+						emailCode: this.$store.state.user.email,
+						phone: true,
+						email: true,
 					},
 					success: res => {
-						this.fullscreenLoading = false;
-						this.options = res.data;
-						this.dialogFormVisible = true;
+						if (res.code === 0) {
+							this.type = data;
+							Get({
+								url: 'CashAddress/findAllCashAddress',
+								data: {
+									type: data
+								},
+								success: res => {
+									this.fullscreenLoading = false;
+									this.options = res.data;
+									this.dialogFormVisible = true;
+								},
+								fail: res => {
+									this.fullscreenLoading = false;
+								}
+							})
+							this.$message({
+								showClose: true,
+								message: res.data,
+								type: 'success'
+							});
+						} else {
+							this.fullscreenLoading = false;
+							this.$message({
+								showClose: true,
+								message: res.data,
+								type: 'error'
+							});
+						}
 					},
 					fail: res => {
 						this.fullscreenLoading = false;
 					}
 				})
+
 			},
 			onSubmit() {
-				this.dialogFormVisible = true;
-				Post({
-					url: 'wallet/outTransaction ',
+				if (!this.form.email) {
+					this.$message({
+						showClose: true,
+						message: '请输入邮箱验证码',
+						type: 'error'
+					});
+					return
+				};
+				if (!this.form.phone) {
+					this.$message({
+						showClose: true,
+						message: '请输入手机验证码',
+						type: 'error'
+					});
+					return
+				};
+				this.fullscreenLoading = true;
+				Get({
+					url: 'fb/okTXCode',
 					data: {
-						//						virtualId: this.form.virtualId,
-						virtualId: this.type,
-						address: this.form.address,
-						value: this.form.value
+						phoneCode: this.form.phone,
+						emailCode: this.form.email,
+						phone: true,
+						email: true,
 					},
 					success: res => {
-						this.fullscreenLoading = false;
 						if (res.code === 0) {
-							this.dialogFormVisible = false;
-							this.form = {};
+							Post({
+								url: 'wallet/outTransaction',
+								data: {
+									//						virtualId: this.form.virtualId,
+									virtualId: this.type,
+									address: this.form.address,
+									value: this.form.value
+								},
+								success: res => {
+									this.fullscreenLoading = false;
+									if (res.code === 0) {
+										this.dialogFormVisible = false;
+										this.form = {};
+									} else {
+										this.$message({
+											showClose: true,
+											message: res.data,
+											type: 'error'
+										});
+									}
+								},
+								fail: res => {
+									this.fullscreenLoading = false;
+								}
+							})
 						} else {
 							this.$message({
 								showClose: true,
-								message: res.message,
+								message: res.data,
 								type: 'error'
 							});
+							this.fullscreenLoading = false;
 						}
 					},
 					fail: res => {
