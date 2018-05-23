@@ -163,7 +163,7 @@
 			<el-upload
 			ref='upload1'
 				v-show='!headPortrait'
-			  action="/log/addUserIDCard"
+			  :action="config+'log/addUserIDCard'"
 			  :auto-upload='true'
 			  list-type="picture-card"
 			  :limit='1'
@@ -180,7 +180,7 @@
 			<el-upload
 		  ref='upload2'
 			  v-show='!nationalEmblem'
-			  action="/log/addUserIDCard"
+			  :action="config+'log/addUserIDCard'"
 			  :auto-upload='true'
 			  list-type="picture-card"
 			  :limit='1'
@@ -197,7 +197,7 @@
 			<el-upload
 			  ref='upload3'
 			  v-show='!people'
-			  action="/log/addUserIDCard"
+			  :action="config+'log/addUserIDCard'"
 			  :auto-upload='true'
 			  list-type="picture-card"
 			  :limit='1'
@@ -445,12 +445,14 @@ width="30%"
 	import Post from '@/api/post';
 	import VueQrs from 'vue-qr';
 	import MD5 from 'js-md5'
+	import config from '@/config'
 	export default {
 		components: {
 			VueQrs
 		},
 		data() {
 			return {
+				config:config,
 				headPortrait: '',
 				nationalEmblem: '',
 				people: '',

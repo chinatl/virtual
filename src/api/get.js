@@ -1,11 +1,13 @@
 import request from 'superagent'
+import config from '@/config'
+
 import {
     Message,
     MessageBox
 } from 'element-ui'
 export default obj => {
     request
-        .get('/' + obj.url)
+        .get(config + obj.url)
         .query(obj.data)
         .then(function (res) {
             if (res.data + '' === 'null') {

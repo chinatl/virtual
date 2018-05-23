@@ -112,7 +112,7 @@
 					<i class="el-icon-close" @click='delimg3'></i>
 					<img :src="people" alt="">
 				</div>
-				<el-upload ref='upload3' v-show='!people' action="/fb/addLegalTenderIn" :data='data' :auto-upload='false' list-type="picture-card" :limit='1' :on-success='successload' :on-error='errorload' :on-change='pushImg' name='file'>
+				<el-upload ref='upload3' v-show='!people' :action="config+'fb/addLegalTenderIn'" :data='data' :auto-upload='false' list-type="picture-card" :limit='1' :on-success='successload' :on-error='errorload' :on-change='pushImg' name='file'>
 					<i class="el-icon-plus"></i>
 				</el-upload>
 			</el-form-item>
@@ -132,12 +132,14 @@
 
 
 <script>
+	import config from '@/config'
 	import Post from '@/api/post.js'
 	import Get from '@/api/get.js'
 	import request from 'superagent'
 	export default {
 		data() {
 			return {
+				config:config,
 				people: '',
 				loading: true,
 				formLabelWidth: 120,

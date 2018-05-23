@@ -1,4 +1,5 @@
 import request from 'superagent'
+import config from '@/config'
 import {
 	Message,
 	MessageBox
@@ -6,7 +7,7 @@ import {
 import Vue from 'vue'
 export default obj => {
 	request
-		.post('/' + obj.url)
+		.post(config + obj.url)
 		.set('Content-type', 'application/x-www-form-urlencoded')
 		.send(obj.data)
 		.then(res => {

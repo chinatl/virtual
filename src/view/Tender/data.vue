@@ -141,7 +141,7 @@
 				<i class="el-icon-close" @click='delimg4'></i>
 				<img :src="zhifubao" alt="">
 			</div>
-			<el-upload  v-show='!zhifubao' action="/legalTender/addLegalTenderUser"  :on-progress='start_up'  name='userAlipay'  :data='ant_data' list-type="picture-card" :limit='1' :on-success='successload' :on-error='errorload' :on-change='pushImg4' ref='upload4' >
+			<el-upload  v-show='!zhifubao' :action="config+'legalTender/addLegalTenderUser'"  :on-progress='start_up'  name='userAlipay'  :data='ant_data' list-type="picture-card" :limit='1' :on-success='successload' :on-error='errorload' :on-change='pushImg4' ref='upload4' >
 				<i class="el-icon-plus"></i>
 			</el-upload>
         </el-form-item>
@@ -180,9 +180,11 @@
 <script>
 	import Get from '@/api/get';
 	import Post from '@/api/post';
+	import config from '@/config'
 	export default {
 		data() {
 			return {
+				config:config,
 				people: '',
 				zhifubao: '',
 				value6: false,
