@@ -44,7 +44,7 @@
 						<span>{{scope.row.tradeMarket}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="操作" width='200'>
+<el-table-column align="center" :label="操作" width='200'>
 	<template slot-scope="scope">
 						<span>{{scope.row.billOperation}}</span>
 						</template>

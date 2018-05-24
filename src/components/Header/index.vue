@@ -178,6 +178,7 @@
 					success: res => {
 						loading.close()
 						if (res.code == 0) {
+							location.reload()
 							this.init();
 						}
 					}

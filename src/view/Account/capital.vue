@@ -46,7 +46,7 @@
 <el-table-column align="center" :label="$t(`account['操作']`)" width='250'>
 	<template slot-scope="scope">
         <span class="cap_current" @click='included(scope.row)' v-if='$store.state.userAccount.length'>{{$t('account["划入"]')}}</span>
-        <span class="cap_no_current" v-if='!$store.state.userAccount.length'>{{$t('account["划入"]')}}</span>
+        <span class="cap_no_current" >{{$t('account["划入"]')}}</span>
         <span class="cap_current" @click='draw(scope.row)' v-if='scope.row.vTotal && $store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
         <span class="cap_no_current" v-if='!scope.row.vTotal || !$store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
         <span :class="scope.row.isTopUp || $store.state.user.mainUsersId ? 'cap_no_current' : 'cap_current' ">
@@ -97,7 +97,7 @@
 			<el-input v-model="included_form.value"></el-input>
 		</el-form-item>
 		<el-form-item label="登录密码">
-			<el-input v-model="included_form.password" type='password' palceholder='请输入登陆密码'></el-input>
+			<el-input v-model="included_form.password" type='password' placeholder='请输入登陆密码'></el-input>
 		</el-form-item>
 		<el-form-item align='right'>
 			<el-button type="primary" @click="onSubmit">确定</el-button>
@@ -139,7 +139,7 @@
 			<el-input v-model="draw_form.password" type='password' placeholder='请输入登陆密码'></el-input>
 		</el-form-item>
 		<el-form-item align='right'>
-			<el-button @click.native="submit_draw_form">确认</el-button>
+			<el-button @click.native="submit_draw_form" type='success'>确认</el-button>
 		</el-form-item>
 	</el-form>
 </el-dialog>
@@ -177,70 +177,73 @@
 			}
 		},
 		created() {
-			this.fullscreenLoading = true;
-			Get({
-				url: 'finance/selvirtualWallet',
-				success: res => {
-					this.fullscreenLoading = false;
-					if (res.code === 0) {
-						this.list = res.data;
-						this.current_data = res.data;
-					} else {
-						this.$message({
-							showClose: true,
-							message: res.data,
-							type: 'error'
-						});
-					}
-				},
-				fail: res => {
-					this.fullscreenLoading = false;
-				}
-			});
-			Get({
-				url: 'giveConfig/findUserAsset',
-				success: res => {
-					//					this.fullscreenLoading = false;
-					if (res.code === 0) {
-						this.now_money = res.data;
-						//						this.current_data = res.data;
-					} else {
-						this.$message({
-							showClose: true,
-							message: res.data,
-							type: 'error'
-						});
-					}
-				},
-				fail: res => {
-					//					this.fullscreenLoading = false;
-				}
-			})
-			Get({
-				url: 'finance/selUser',
-				success: res => {
-//					this.fullscreenLoading = false;
-					if (res.code === 0) {
-						this.userArr = res.data;
-						if (res.data.length === 0) {
-							return
-						}
-						this.included_moren = res.data[0];
-						this.draw_moren = res.data[0];
-					} else {
-						this.$message({
-							showClose: true,
-							message: res.data,
-							type: 'error'
-						});
-					}
-				},
-				fail: res => {
-//					this.fullscreenLoading = false;
-				}
-			})
+			this.init()
 		},
 		methods: {
+			init() {
+				Get({
+					url: 'finance/selUser',
+					success: res => {
+						//					this.fullscreenLoading = false;
+						if (res.code === 0) {
+							this.userArr = res.data;
+							if (res.data.length === 0) {
+								return
+							}
+							this.included_moren = res.data[0];
+							this.draw_moren = res.data[0];
+						} else {
+							this.$message({
+								showClose: true,
+								message: res.data,
+								type: 'error'
+							});
+						}
+					},
+					fail: res => {
+						//					this.fullscreenLoading = false;
+					}
+				});
+				this.fullscreenLoading = true;
+				Get({
+					url: 'finance/selvirtualWallet',
+					success: res => {
+						this.fullscreenLoading = false;
+						if (res.code === 0) {
+							this.list = res.data;
+							this.current_data = res.data;
+						} else {
+							this.$message({
+								showClose: true,
+								message: res.data,
+								type: 'error'
+							});
+						}
+					},
+					fail: res => {
+						this.fullscreenLoading = false;
+					}
+				});
+				Get({
+					url: 'giveConfig/findUserAsset',
+					success: res => {
+						//					this.fullscreenLoading = false;
+						if (res.code === 0) {
+							this.now_money = res.data;
+							//						this.current_data = res.data;
+						} else {
+							this.$message({
+								showClose: true,
+								message: res.data,
+								type: 'error'
+							});
+						}
+					},
+					fail: res => {
+						//					this.fullscreenLoading = false;
+					}
+				})
+			},
 			checkout(e) {
 				if (e) {
 					var arr = this.current_data.filter(res => {
@@ -285,9 +288,10 @@
 						this.fullscreenLoading = false;
 						if (res.code === 0) {
 							this.draw_dialog = false;
+							this.init();
 							this.$message({
 								showClose: true,
-								message: res.message,
+								message: res.data,
 								type: 'success'
 							});
 						} else {
@@ -326,6 +330,7 @@
 						this.fullscreenLoading = false;
 						if (res.code === 0) {
 							this.dialogFormVisible = false;
+							this.init()
 							this.$message({
 								showClose: true,
 								message: res.data,
@@ -334,7 +339,7 @@
 						} else {
 							this.$message({
 								showClose: true,
-								message: res.message,
+								message: res.data,
 								type: 'error'
 							});
 						}

@@ -13,7 +13,7 @@
 				<li v-for='(item,index) in nav_data'
 			 		@click='checkout_item(item,index)'
 				 	:class="current === index ? 'menu__item menu__item--current':'menu__item'" >
-					<a class="menu__link">{{item.vName}}</a>
+					<a class="menu__link"><img :src="item.markUrl" alt="" class="markUrl" >{{item.vName}}</a>
 				</li>
 			</ul>
 		</div>
@@ -26,9 +26,9 @@
 					  <div  style='float:right;padding-top:2px' >
 						<el-button type='primary' @click='opendialog(i)'>{{$t('ranking["查看全部"]')}}</el-button>
 					  </div>
-					  <h3 class="h3_title">{{i.vName}}</h3>
+					  <h3 class="h3_title"><img :src="i.markUrl" alt="" class="markUrl" >{{i.vName}}</h3>
 					  <div class="p_title">
-					  	<p v-show='getuser(i)'>{{$t('ranking["排名"]')}}：{{getRank(i)}} {{$t('ranking["预计奖励"]')}}({{getPrice(i)}})：- <el-button size='mini' type='success'  @click='receive(i)'>领取</el-button></p>
+					  	<p v-show='getuser(i)'>{{$t('ranking["排名"]')}}：{{getRank(i)}} {{$t('ranking["预计奖励"]')}}({{getPrice(i)}}){{i.vName}}：- <el-button size='mini' :type='panduan(i) ? "info":"success"'  @click='receive(i)' :disabled="panduan(i)">{{panduan(i)? "已领取":"领取"}}</el-button></p>
 					  </div>
 				  </div>
 				  <div>
@@ -42,7 +42,7 @@
 						:label="$t(`ranking['排名']`)"
 						width='54'>
 							<template slot-scope="scope">
-								<span>{{scope.$index + 10}}</span>
+								<span>{{scope.$index + 1}}</span>
 							</template>
 </el-table-column>
 <el-table-column align='center' label="UID" width='64'>
@@ -52,15 +52,15 @@
 </el-table-column>
 <el-table-column align='center' :label="$t(`footer['用户昵称']`)">
 	<template slot-scope="scope">
-    <span>{{scope.row.nickName}}</span>
+    <span>{{ scope.row.nickName && scope.row.nickName.slice(0,3) +'****'}}</span>
     </template>
 </el-table-column>
-<el-table-column align='right' :label="$t(`ranking['交易额']`)">
+<el-table-column align='right' :label="$t(`ranking['交易额']`)+' '+i.vName" width='80'>
 	<template slot-scope="scope">
 		<span>{{scope.row.sumAmount}}</span>
 	</template>
 </el-table-column>
-<el-table-column align='right' :label="$t(`ranking['预计奖励']`)">
+<el-table-column align='right' :label="$t(`ranking['预计奖励']`)+ (i.shortName || '暂无')" width='85'>
 	<template slot-scope="scope">
 							<span>
 							{{get_gift(scope.$index,i)}}
@@ -96,15 +96,15 @@
 
 		<el-table-column align='center' :label="$t(`ranking['用户昵称']`)">
 			<template slot-scope="scope">
-                                                <span>{{scope.row.nickName}}</span>
-                                        </template>
+				<span>{{scope.row.nickName && scope.row.nickName.slice(0,3) +'****'}}</span>
+			</template>
 		</el-table-column>
-		<el-table-column :label="$t(`ranking['交易额']`)" align='right'>
+		<el-table-column :label="$t(`ranking['交易额']`)+flag.vName" align='right'>
 			<template slot-scope="scope">
 						<span>{{scope.row.sumAmount}}</span>
 					</template>
 		</el-table-column>
-		<el-table-column :label="$t(`ranking['预计奖励']`)" align='right'>
+		<el-table-column :label="$t(`ranking['预计奖励']`) + (flag.shortName || '暂无')" align='right'>
 			<template slot-scope="scope">
 						<span>{{get_gift(scope.$index,flag)}}</span>
 					</template>
@@ -153,6 +153,15 @@
 		},
 
 		methods: {
+			panduan(item) {
+				var rank = item.rank;
+				for (var i = 0; i < rank.length; i++) {
+					if (rank[i].isRankingGet) {
+						return true
+					}
+				}
+				return
+			},
 			getRank(item) {
 				var rank = item.rank;
 				for (var i = 0; i < rank.length; i++) {
@@ -182,6 +191,7 @@
 
 			},
 			receive(item) {
+				console.log(item);
 				var giveAmount = this.getPrice(item)
 				if (this.$store.state.isLogin + '' === 'null') {
 					this.$alert('您未登陆，请登录后重试', {
@@ -207,7 +217,7 @@
 							userId: this.$store.state.user.id,
 							giveAmount: giveAmount,
 							giveVirtualCurrencyId: item.vId,
-							tradeMarket: item.vName +'_' + this.nav_data[this.current].vName
+							tradeMarket: item.vName + '_' + this.nav_data[this.current].vName
 						},
 						success: res => {
 							this.loading = false;
@@ -695,6 +705,15 @@
 
 <style>
 	@import '../../assets/css/line.css';
+	.markUrl {
+		width: 24px;
+		height: 24px;
+		vertical-align: sub;
+		margin-right: 10px;
+
+
+	}
+
 	.loading {
 		position: fixed;
 		top: 0;
