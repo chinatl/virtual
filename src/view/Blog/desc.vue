@@ -2,12 +2,12 @@
 	<div class="con exx-blog">
 	<h2>{{data.notice }}
 		<p class="time">
-			发布时间：{{data.notime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}
+			{{$t('other["发布时间"]')}}：{{data.notime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}
 		</p>
 	</h2>
 	<div class="blog-info">
 		<p></p>
-		<p>尊敬的用户：&nbsp; &nbsp;</p>
+		<p>{{$t('other["尊敬的用户"]')}}：&nbsp; &nbsp;</p>
 		<div v-html='data.noticenr'></div>
 	</div>
 </div>

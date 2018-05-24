@@ -3,7 +3,7 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">综合账单</span>
+		  	<span style="font-size:14px;font-weight:bold">{{$t('other["综合账单"]')}}</span>
 			<div  style="float: right;margin-top:-9px">
 				 <el-select v-model="formInline.currId" 
 				 style='width:240px;margin-right:20px'
@@ -21,7 +21,7 @@
 				   style='width:240px;margin-right:20px'
 				   size='small'
 				 	@change='init'
-				   placeholder="请选择">
+				   :placeholder='$(`other["请选择"]`)'>
 					<el-option
 					  v-for="item in options1"
 					  :key="item.value"
@@ -39,37 +39,37 @@
 				   v-loading="loading"
 			   :default-sort = "{prop: 'date', order: 'descending'}"
 				style="width: 100%;">
-					<el-table-column align="center" label="交易市场">
+					<el-table-column align="center" :label='$t(`other["交易市场"]`)'>
 						<template slot-scope="scope" >
 						<span>{{scope.row.tradeMarket}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="操作" width='200'>
+<el-table-column align="center" :label='$t(`other["操作"]`)' width='200'>
 	<template slot-scope="scope">
 						<span>{{scope.row.billOperation}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="交易类型">
+<el-table-column align="center" :label='$t(`other["交易类型"]`)'>
 	<template slot-scope="scope">
 						<span>{{scope.row.billType}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="时间" sortable prop='date' width='200'>
+<el-table-column align="center" :label='$t(`other["时间"]`)' sortable prop='date' width='200'>
 	<template slot-scope="scope">
 							<span>{{scope.row.createTime}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="扣除/增加">
+<el-table-column align="center" :label='$t(`other["扣除/增加"]`)'>
 	<template slot-scope="scope">
 							<span :style="{color: scope.row.currentAmount - scope.row.lastAmount >0 ? '#10fb0a' : '#fc0511'}">{{scope.row.currentAmount - scope.row.lastAmount}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="余额(交易前)">
+<el-table-column align="center" :label='$t(`other["余额(交易前)"]`)'>
 	<template slot-scope="scope">
 							<span>{{scope.row.currentAmount}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="余额(交易后)">
+<el-table-column align="center" :label='$t(`other["余额(交易后)"]`)'>
 	<template slot-scope="scope">
 							<span>{{scope.row.lastAmount}}</span>
 						</template>

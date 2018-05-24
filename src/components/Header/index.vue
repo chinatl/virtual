@@ -10,8 +10,8 @@
 		<div class="h-box">
 			<div class="subscription">
 				<router-link to='/' style='font-size:14px'>
-					{{$t('menu["主页"]')}}
-<!--					<img :src="require('@/assets/xlogo.png')" alt="" style='height:50px;'>-->
+<!--					{{$t('menu["主页"]')}}-->
+					<img :src="require('@/assets/xlogo.png')" alt="" style='height:50px;'>
 				</router-link>
 			</div>
 			<div class="subscription" style="margin-left: 20px;">
@@ -178,6 +178,7 @@
 					success: res => {
 						loading.close()
 						if (res.code == 0) {
+							location.reload()
 							this.init();
 						}
 					}

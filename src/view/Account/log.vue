@@ -3,14 +3,14 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">委托记录</span>
+		  	<span style="font-size:14px;font-weight:bold">{{$t('other["委托记录"]')}}</span>
 			<div  style="float: right;margin-top:-9px">
 				 <el-select v-model="formInline.teadeMarket" 
 				 style='width:240px;margin-right:20px'
 				 @change='init'
 				 size='small'
 				 filterable>
-				     <el-option key='' value='' label='全部市场'></el-option>
+				     <el-option key="" value="" :label='$t(`other["全部市场"]`)'></el-option>
 					<el-option
 					  v-for="item in options"
 					  :key="item.tradeMarket"
@@ -29,49 +29,49 @@
 				 border
 			   :default-sort = "{prop: 'date', order: 'descending'}"
 				style="width: 100%;">
-					<el-table-column align="center" label="时间" width='160'>
+					<el-table-column align="center" :label='$t(`other["时间"]`)' width='160'>
 						<template slot-scope="scope" >
 						<span>{{scope.row.lastUpdateTime | parseTime('{y}-{m}-{d} {h}:{m}:{s}')}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="市场">
+<el-table-column align="center" :label='$t(`other["市场"]`)'>
 	<template slot-scope="scope">
 						<span>{{scope.row.tradeMarket}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="委托价/成交均价">
+<el-table-column align="center" :label='$t(`other["委托价/成交均价"]`)'>
 	<template slot-scope="scope">
 						<span>{{scope.row.averagePrize}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="委托类型" prop='date'>
+<el-table-column align="center" :label='$t(`other["委托类型"]`)' prop='date'>
 	<template slot-scope="scope">
-							<span>{{scope.row.entrustType ? '卖出' : '买入'}}</span>
+							<span>{{scope.row.entrustType ? $t('other["卖出"]') : $t('other["买入"]')}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="剩余可交易的数量">
+<el-table-column align="center" :label='$t(`other["剩余可交易的数量"]`)'>
 	<template slot-scope="scope">
 							<span>{{scope.row.leftAmount}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="成交总金额">
+<el-table-column align="center" :label='$t(`other["成交总金额"]`)'>
 	<template slot-scope="scope">
 							<span>{{scope.row.leftCount}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="订单状态">
+<el-table-column align="center" :label='$t(`other["订单状态"]`)'>
 	<template slot-scope="scope">
             <span>
-                {{scope.row.poolStatus === 0 ? '未成交' : null}}
-                {{scope.row.poolStatus === 1 ? '完全成交' : null}}
-                {{scope.row.poolStatus === 2 ? '部分成交' : null}}
-                {{scope.row.poolStatus === 3 ? '用户撤销' : null}}
+                {{scope.row.poolStatus === 0 ? $t('other["未成交"]') : null}}
+                {{scope.row.poolStatus === 1 ? $t('other["完全成交"]') : null}}
+                {{scope.row.poolStatus === 2 ? $t('other["部分成交"]') : null}}
+                {{scope.row.poolStatus === 3 ? $t('other["用户撤销"]') : null}}
             </span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="操作">
+<el-table-column align="center" :label='$t(`other["操作"]`)'>
 	<template slot-scope="scope">
-           <el-button type='success' size='mini' @click='cancel(scope.row.id)'>撤销</el-button>
+           <el-button type='success' size='mini' @click='cancel(scope.row.id)'>{{$('other["撤销"]')}}</el-button>
 	</template>
 </el-table-column>
 </el-table>

@@ -37,7 +37,7 @@
 								<el-button type='primary'
 									size='mini' 
 									@click='go_exchange'
-								 :disabled=' isStart=== "距离抢购开始还剩" || isStart=== "抢购已结束" '>{{$t('subscription["立即抢购"]')}}</el-button>
+								 :disabled='isStart=== $t(`other["距离抢购开始还剩"]`) || isStart=== $t(`other["抢购已结束"]`)'>{{$t('subscription["立即抢购"]')}}</el-button>
 								<div>{{isStart}}<span class="blue">{{leftTime}}</span></div>
 							</div>
 							<p>{{$t('subscription["备注"]')}}：{{page_data.remark}}</p>
@@ -61,31 +61,31 @@
 			</div>
 		</div>
 <div class="t-dialog">
-	<el-dialog title="立即抢购" :visible.sync="dialogFormVisible"  label-width="80px">
+	<el-dialog :title="$t(`other['立即抢购']`)" :visible.sync="dialogFormVisible"  label-width="80px">
 		  <el-form :model="form">
-			<el-form-item label="认购币种：">
+			<el-form-item :label="$t(`other['认购币种:']`)">
 			  <el-input v-model="form.virtualName" auto-complete="off" style='width:300px' disabled></el-input>
 			</el-form-item>
 		  </el-form> 
 		  <el-form :model="form">
-			<el-form-item label="交易币种：">
+			<el-form-item :label="$t(`other['交易币种:']`)">
 			  <el-input v-model="form.subscriptionName" auto-complete="off" style='width:300px' disabled></el-input>
 			</el-form-item>
 		  </el-form> 
 		  <el-form :model="form">
-			<el-form-item label="输入份数：">
+			<el-form-item :label="$t(`other['输入份数:']`)">
 			  <el-input v-model="form.virtualCopies"
 			  	@change.native='get_vTotal'
 			  	@keyup.native='get_vTotal'
 				type='number'
-			   	placeholder='请输入整数' style='width:300px'></el-input>
+			   	:placeholder="$t(`other['请输入整数']`)" style='width:300px'></el-input>
 			   <br />
-			  <span style='margin-left:82px'>预计{{vTotal}}{{form.subscriptionName}}</span>
+			  <span style='margin-left:82px'>{{$t('other["预计"]')}}{{vTotal}}{{form.subscriptionName}}</span>
 			</el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
-			<el-button @click="dialogFormVisible = false">取 消</el-button>
-			<el-button type="primary" @click="agree">确 定</el-button>
+			<el-button @click="dialogFormVisible = false">{{$t('other["取 消"]')}}</el-button>
+			<el-button type="primary" @click="agree">{{$t('other["确 定"]')}}</el-button>
 		  </div>
 	</el-dialog>
 </div>

@@ -75,7 +75,17 @@
 				<el-radio label="2" v-show='form.user_alipay'>{{$t(`footer['微信']`)}}</el-radio>
 			</el-radio-group>
 		</el-form-item>
-		<el-form-item label="备注信息：" align='left'>
+
+
+
+
+
+
+
+
+
+
+		<el-form-item :label="$t(`other['备注信息:']`)" align='left'>
 			<span style='color:red'>{{remark}}</span>（{{$t(`footer['转账时备注红色数字，以免造成无法及时到账的情况']`)}}）<br />
 			<p style='color:rgb(255,197,0);'>{{$t(`footer['注意事项']`)}}</p>
 		</el-form-item>
@@ -86,32 +96,32 @@
 	</el-form>
 
 </el-dialog>
-<el-dialog title="请确认你的卖出订单信息" :visible.sync="titleForm" width='40%'>
+<el-dialog :title="$t(`other['请确认你的卖出订单信息']`)" :visible.sync="titleForm" width='40%'>
 	<div class="title-lox">
 		<el-form :model="form" label-width="160px">
 			<!--英航卡-->
-			<el-form-item label="开 户 行：" v-if='form.payment == "0"'>
+			<el-form-item :label="$t(`other['开 户 行:']`)" v-if='form.payment == "0"'>
 				<span>{{form.user_bank}}</span>
 			</el-form-item>
-			<el-form-item label="户    名：" v-if='form.payment == "0"'>
+			<el-form-item :label="$t(`other['户    名:']`)" v-if='form.payment == "0"'>
 				<span>{{form.user_bank_user}}</span>
 			</el-form-item>
-			<el-form-item label="银行卡号：" v-if='form.payment == "0"'>
+			<el-form-item :label="$t(`other['银行卡号:']`)" v-if='form.payment == "0"'>
 				<span>{{form.user_bank_card}}</span>
 			</el-form-item>
 			<!-- 微信 -->
-			<el-form-item label="微信收款码：" v-if='form.payment == "2"'>
+			<el-form-item :label="$t(`other['微信收款码:']`)" v-if='form.payment == "2"'>
 				<img :src="form.user_wechar" alt="" style="width:250px">
 			</el-form-item>
 			<!--支付宝收款码-->
-			<el-form-item label="支付宝收款码：" v-if='form.payment == "1"'>
+			<el-form-item :label="$t(`other['支付宝收款码:']`)" v-if='form.payment == "1"'>
 				<img :src="form.user_alipay" alt="" style="width:250px">
 			</el-form-item>
 			<!--支付宝收款码-->
-			<el-form-item label="转账金额：">
+			<el-form-item :label="$t(`other['转账金额:']`)">
 				<span>{{form.amount * form.fb_price}} </span> CNY
 			</el-form-item>
-			<el-form-item label='上传付款截图：'>
+			<el-form-item :label="$t(`other['上传付款截图:']`)">
 				<div class="upload-imgList" v-show='people'>
 					<i class="el-icon-close" @click='delimg3'></i>
 					<img :src="people" alt="">
@@ -120,13 +130,13 @@
 					<i class="el-icon-plus"></i>
 				</el-upload>
 			</el-form-item>
-			<el-form-item label="备注信息：">
-				<span style='color:red'>{{remark}}</span>（转账时备注红色数字，以免造成无法及时到账的情况）<br />
-				<p style='color:rgb(255,197,0);'>注意：请你务必在30分钟以内到以上账户，如30分钟内未完成交易，本次交易将被强制取消</p>
+			<el-form-item :label="$t(`other['备注信息:']`)">
+				<span style='color:red'>{{remark}}</span>{{$t('other["（转账时备注红色数字，以免造成无法及时到账的情况）"]')}}<br />
+				<p style='color:rgb(255,197,0);'>{{$t('other["注意：请你务必在30分钟以内到以上账户，如30分钟内未完成交易，本次交易将被强制取消"]')}}</p>
 			</el-form-item>
 			<el-form-item>
-				<el-button type='info' @click='canel_trade'>取消交易</el-button>
-				<el-button type='success' @click='gotopay'>已经付款</el-button>
+				<el-button type='info' @click='canel_trade'>{{$t('other["取消交易"]')}}</el-button>
+				<el-button type='success' @click='gotopay'>{{$t('other["已经付款"]')}}</el-button>
 			</el-form-item>
 		</el-form>
 	</div>

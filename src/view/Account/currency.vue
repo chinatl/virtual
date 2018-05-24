@@ -3,20 +3,20 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">提币</span>
+		  	<span style="font-size:14px;font-weight:bold">{{$t('other["提币"]')}}</span>
 			<div  style="float: right;margin-top:-9px">
 			</div>
 		  </div>
 			<div class="select">
 				<el-table :data="table_data" fit highlight-current-row border style="width: 100%">
-					<el-table-column align="center" label="币种名称">
+					<el-table-column align="center" :label='$t(`other["币种名称"]`)'>
 						<template slot-scope="scope">
 						<span>{{scope.row}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="地址管理">
+<el-table-column align="center" :label='$t(`other["地址管理"]`)'>
 	<template slot-scope="scope">
-							<span><el-button type='success' @click.native='address(scope.row)' size='mini'>详情</el-button></span>
+							<span><el-button type='success' @click.native='address(scope.row)' size='mini'>{{$t('other["详情"]')}}</el-button></span>
 						</template>
 </el-table-column>
 
@@ -27,9 +27,9 @@
 						</template>
 </el-table-column>
 -->
-<el-table-column align="center" label="操作" width='200'>
+<el-table-column align="center" :label="$t(`other['操作']`)" width='200'>
 	<template slot-scope="scope">
-<span><el-button type='success' @click.native='Withdrawals(scope.row)' size='mini'>提现</el-button></span>
+<span><el-button type='success' @click.native='Withdrawals(scope.row)' size='mini'>{{$t('other["提现"]')}}</el-button></span>
 </template>
 </el-table-column>
 </el-table>
@@ -39,7 +39,7 @@
 <div class="pay-content">
 	<el-card class="box-card">
 		<div slot="header" class="clearfix">
-			<span style="font-size:14px;font-weight:bold">提币记录</span>
+			<span style="font-size:14px;font-weight:bold">{{$t('other["提币记录"]')}}</span>
 		</div>
 		<div class="select">
 			<el-table :data="record_data" v-loading='loading' fit highlight-current-row border style="width: 100%">
@@ -50,7 +50,7 @@
 				</el-table-column>
 				<el-table-column align="center" :label="$t(`account['类型']`)">
 					<template slot-scope="scope">
-						<span>{{scope.row.type === 1 ? '类型' : '提现'}}</span>
+						<span>{{scope.row.type === 1 ? $t(`other["类型"]`) : $t(`other["类型"]`)}}</span>
 						</template>
 				</el-table-column>
 				<el-table-column align="center" :label="$t(`account['确认次数']`)">
@@ -137,10 +137,10 @@
 	</el-table>
 	<el-dialog :title="$t(`account['添加地址']`)" :visible.sync="addVisible" width='30%' @close='close' append-to-body :close='close'>
 		<el-form ref="form" :model="add_form" label-width="120px">
-			<el-form-item label="冲向地址：">
+			<el-form-item :label='$t(`other["冲向地址:"]`)'>
 				<el-input v-model="add_form.address"></el-input>
 			</el-form-item>
-			<el-form-item label="备注：">
+			<el-form-item :label='$t(`other["备注:"]`)'"">
 				<el-input v-model="add_form.remark"></el-input>
 			</el-form-item>
 			<el-form-item align='right'>

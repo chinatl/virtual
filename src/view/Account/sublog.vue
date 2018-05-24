@@ -3,7 +3,7 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">认购记录</span>
+		  	<span style="font-size:14px;font-weight:bold">{{$t('other["认购记录"]')}}</span>
 		  </div>
 		  <div class="select">
 		 	<el-table :data="list" 
@@ -14,27 +14,27 @@
 			   :default-sort = "{prop: 'date', order: 'descending'}"
 				style="width: 100%;">
 				
-<el-table-column align="center" label="用户昵称" width='200'>
+<el-table-column align="center" :label="$t(`other['用户昵称']`)" width='200'>
     <template slot-scope="scope">
 						<span>{{scope.row.nickName}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="认购币名称">
+<el-table-column align="center" :label="$t(`other['认购币名称']`)">
     <template slot-scope="scope">
 						<span>{{scope.row.shortName}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="每天认购份数" prop='date' >
+<el-table-column align="center" :label="$t(`other['每天认购份数']`)" prop='date' >
     <template slot-scope="scope">
 							<span>{{scope.row.evrdayCopies}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="认购份数">
+<el-table-column align="center" :label="$t(`other['认购份数']`)">
     <template slot-scope="scope">
 							<span>{{scope.row.virtualCopies}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" label="当天时间">
+<el-table-column align="center" :label="$t(`other['当天时间']`)">
     <template slot-scope="scope">
 		<span>{{scope.row.thedayTime |parseTime( '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
 	</template>
