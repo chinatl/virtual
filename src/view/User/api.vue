@@ -1,7 +1,7 @@
 <template>
 <div class="pay_panel">
 	<div class="pay-content">
-		暂未开启
+		{{$t('other["暂未开启"]')}}
 	</div>
 </div>
 </template>

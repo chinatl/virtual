@@ -8,7 +8,7 @@
 		  </div>
 			<div class="select">
 				<div style="margin-bottom:10px">
-					<el-input placeholder="请输入内容" v-model="copyData" disabled>
+					<el-input :placeholder="$t(`other['请输入内容']`)" v-model="copyData" disabled>
 						<template slot="append">
 							<el-button type="primary" icon="document"
 							 v-clipboard="copyData"

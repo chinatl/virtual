@@ -105,27 +105,27 @@
 			</el-form-item>
 			<el-form-item :label="$t(`footer['开户银行']`) +'：'">
 				  <el-select v-model="form_card.userBank" filterable :placeholder="$t(`footer['请选择']`)" style='width:100%'>
-					<el-option value='中国邮政银行' label='中国邮政银行'></el-option>
-					<el-option value='中国建设银行' label='中国建设银行'></el-option>
-					<el-option value='中国农业银行' label='中国农业银行'></el-option>
-					<el-option value='中国招商银行' label='中国招商银行'></el-option>
-					<el-option value='中国银行' label='中国银行'></el-option>
-					<el-option value='交通银行' label='交通银行'></el-option>
-					<el-option value='广东发展银行' label='广东发展银行'></el-option>
-					<el-option value='中信银行' label='中信银行'></el-option>
-					<el-option value='光大银行' label='光大银行'></el-option>
-					<el-option value='浦发银行' label='浦发银行'></el-option>
-					<el-option value='中国民生银行' label='中国民生银行'></el-option>
-					<el-option value='兴业银行' label='兴业银行'></el-option>
-					<el-option value='平安银行' label='平安银行'></el-option>
-					<el-option value='华夏银行' label='华夏银行'></el-option>
+					<el-option :value='$t(`other["中国邮政银行"]`)' :label='$t(`other["中国邮政银行"]`)'></el-option>
+					<el-option :value='$t(`other["中国建设银行"]`)' :label='$t(`other["中国建设银行"]`)'></el-option>
+					<el-option :value='$t(`other["中国农业银行"]`)' :label='$t(`other["中国农业银行"]`)'></el-option>
+					<el-option :value='$t(`other["中国招商银行"]`)' :label='$t(`other["中国招商银行"]`)'></el-option>
+					<el-option :value='$t(`other["中国银行"]`)' :label='$t(`other["中国银行"]`)'></el-option>
+					<el-option :value='$t(`other["交通银行"]`)' :label='$t(`other["交通银行"]`)'></el-option>
+					<el-option :value='$t(`other["广东发展银行"]`)' :label='$t(`other["广东发展银行"]`)'></el-option>
+					<el-option :value='$t(`other["中信银行"]`)' :label='$t(`other["中信银行"]`)'></el-option>
+					<el-option :value='$t(`other["光大银行"]`)' :label='$t(`other["光大银行"]`)'></el-option>
+					<el-option :value='$t(`other["浦发银行"]`)' :label='$t(`other["浦发银行"]`)'></el-option>
+					<el-option :value='$t(`other["中国民生银行"]`)' :label='$t(`other["中国民生银行"]`)'></el-option>
+					<el-option :value='$t(`other["兴业银行"]`)' :label='$t(`other["兴业银行"]`)'></el-option>
+					<el-option :value='$t(`other["平安银行"]`)' :label='$t(`other["平安银行"]`)'></el-option>
+					<el-option :value='$t(`other["华夏银行"]`)' :label='$t(`other["华夏银行"]`)'></el-option>
 				  </el-select>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['银行卡卡号']`) +'：'">
 				<el-input v-model="form_card.userBankCard" placeholder="$t(`footer['银行卡卡号']`)"></el-input>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['银行预留手机号码']`) +'：'">
-				<el-input v-model="form_card.userBankPhone" placeholder="$t(`footer['银行预留手机号码']`)"></el-input>
+				<el-input v-model="form_card.userBankPhone" :placeholder="$t(`footer['银行预留手机号码']`)"></el-input>
 			</el-form-item>
 <el-form-item align='right'>
     <el-button @click="cancel_pwd">{{$t(`footer['取消']`)}}</el-button>

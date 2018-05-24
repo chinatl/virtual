@@ -5,9 +5,9 @@
 			<div slot="header" class="clearfix">
 				<span style="font-size:14px;font-weight:bold">{{$t('account["资金"]')}}	</span>
 				<div style="float: right;">
-					<span style='margin-right:20px;font-size:14px'>账户资产价值：{{now_money}} CNY</span>
+					<span style='margin-right:20px;font-size:14px'>{{$t('other["账户资产价值"]')}}：{{now_money}} CNY</span>
 <!--					折算总金额(CNY) <span style='margin-left:20px'>VIP等级</span>-->
-					<el-switch v-model='show0'  @change='checkout'></el-switch><span style="margin-left:10px">隐藏小额资产</span>
+					<el-switch v-model='show0'  @change='checkout'></el-switch><span style="margin-left:10px">{{$t('other["隐藏小额资产"]')}}</span>
 				</div>
 			</div>
 			<div class="select">
@@ -66,7 +66,7 @@
 </div>
 </el-card>
 </div>
-<el-dialog title="内部划账" :visible.sync="dialogFormVisible" width='60%' @close='clearInput'>
+<el-dialog :title='$t(`other["内部划账"]`)' :visible.sync="dialogFormVisible" width='60%' @close='clearInput'>
 	<div class='included'>
 		<div class="include-item">
 			<div class="img"></div>
@@ -83,45 +83,45 @@
 				</el-dropdown>
 			</div>
 		</div>
-		<div class="include-arrow">转入{{now_market}}到</div>
+		<div class="include-arrow">{{$t('other["转入"]')}}{{now_market}}{{$t('other["到"]')}}</div>
 		<div class="include-item" style="border:2px dashed #d7d9dc">
 			<div class="img"></div>
 			<div class="introduce">
 				<h3>{{$store.state.user.nickName}}</h3>
-				<p>可用{{now_market}}：{{my_money}}</p>
+				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money}}</p>
 			</div>
 		</div>
 	</div>
 	<el-form ref="form" :model="included_form" label-width="80px">
-		<el-form-item label="转入金额">
+		<el-form-item :label='$t(`other["转入金额"]`)'>
 			<el-input v-model="included_form.value"></el-input>
 		</el-form-item>
-		<el-form-item label="登录密码">
-			<el-input v-model="included_form.password" type='password' placeholder='请输入登陆密码'></el-input>
+		<el-form-item :label='$t(`other["登录密码"]`)'>
+			<el-input v-model="included_form.password" type='password' :placeholder='$t(`other["请输入登陆密码"]`)'></el-input>
 		</el-form-item>
 		<el-form-item align='right'>
-			<el-button type="primary" @click="onSubmit">确定</el-button>
+			<el-button type="primary" @click="onSubmit">{{$t('other["确定"]')}}</el-button>
 		</el-form-item>
 	</el-form>
 </el-dialog>
 <!--转出到-->
-<el-dialog title="内部划账" :visible.sync="draw_dialog" width='60%' @close='clearInput'>
+<el-dialog :title='$t(`other["内部划账"]`)' :visible.sync="draw_dialog" width='60%' @close='clearInput'>
 	<div class='included'>
 		<div class="include-item" style="border:2px dashed #d7d9dc">
 			<div class="img"></div>
 			<div class="introduce">
 				<h3>{{$store.state.user.nickName}}</h3>
-				<p>可用{{now_market}}：{{my_money}}</p>
+				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money}}</p>
 			</div>
 		</div>
-		<div class="include-arrow">转入{{now_market}}到</div>
+		<div class="include-arrow">{{$t('other["转入"]')}}{{now_market}}{{$t('other["到"]')}}</div>
 		<div class="include-item">
 			<div class="img"></div>
 			<div class="introduce">
 				<el-dropdown @command="handleCommand1">
 					<div class="el-dropdown-link">
 						<h3>{{included_moren.nickName}}</h3>
-						<p>可用{{now_market}}：{{number}}</p>
+						<p>{{$t('other["可用"]')}}{{now_market}}：{{number}}</p>
 						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-80px;top:0;z-index:20"></i>
 					</div>
 					<el-dropdown-menu slot="dropdown">
@@ -132,14 +132,14 @@
 		</div>
 	</div>
 	<el-form :model="draw_form" label-width="80px">
-		<el-form-item label="转出金额">
+		<el-form-item :label='$t(`other["转出金额"]`)'>
 			<el-input v-model="draw_form.value"></el-input>
 		</el-form-item>
-		<el-form-item label="登录密码">
-			<el-input v-model="draw_form.password" type='password' placeholder='请输入登陆密码'></el-input>
+		<el-form-item :label='$t(`other["登录密码"]`)'>
+			<el-input v-model="draw_form.password" type='password' :placeholder='$t(`other["请输入登陆密码"]`)'></el-input>
 		</el-form-item>
 		<el-form-item align='right'>
-			<el-button @click.native="submit_draw_form" type='success'>确认</el-button>
+			<el-button @click.native="submit_draw_form" type='success'>{{$t('other["确认"]')}}</el-button>
 		</el-form-item>
 	</el-form>
 </el-dialog>

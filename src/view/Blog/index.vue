@@ -3,7 +3,7 @@
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
-		  	<span style="font-size:14px;font-weight:bold">公告</span>
+		  	<span style="font-size:14px;font-weight:bold">{{$t('other["公告"]')}}</span>
 		  </div>
 		  <div class="select">
 		 		<ul>

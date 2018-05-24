@@ -80,7 +80,7 @@
 </el-card>
 </div>
 </div>
-<p style="text-align:center;margin-bottom:20px;color:#ccc">----------我是有底线的---------</p>
+<p style="text-align:center;margin-bottom:20px;color:#ccc">----------{{$t('other["我是有底线的"]')}}---------</p>
 <el-dialog :visible.sync="dialogTableVisible">
 	<el-table :data="dialogData" stripe height="400">
 		<el-table-column prop="address" align='center' :label="$t(`ranking['排名']`)">
@@ -104,7 +104,8 @@
 						<span>{{scope.row.sumAmount}}</span>
 					</template>
 		</el-table-column>
-		<el-table-column :label="$t(`ranking['预计奖励']`) + (flag.shortName || '暂无')" align='right'>
+
+		<el-table-column :label="$t(`ranking["预计奖励"]`) + (flag.shortName || $t(`other["暂无"]`)')" align='right'>
 			<template slot-scope="scope">
 						<span>{{get_gift(scope.$index,flag)}}</span>
 					</template>

@@ -155,7 +155,7 @@
 	width="40%"
 >
 	<el-form  label-width="200px">
-		<el-form-item label='身份证人像面:'>
+		<el-form-item :label='$t(`other["身份证人像面:"]`)'>
 			<div class="upload-imgList" v-show='headPortrait'>
 				<i class="el-icon-close"  @click='delimg1' v-if='!check2()'></i>
 				<img :src="headPortrait" alt="">
@@ -172,7 +172,7 @@
 			  <i class="el-icon-plus"></i>
 			</el-upload>
 		</el-form-item>
-		<el-form-item label='身份证国徽面:'>
+		<el-form-item :label='$t(`other["身份证国徽面:"]`)'>
 			<div class="upload-imgList" v-show='nationalEmblem'>
 				<i class="el-icon-close" @click='delimg2' v-if='!check2()'></i>
 				<img :src="nationalEmblem" alt="">
@@ -189,7 +189,7 @@
 			  <i class="el-icon-plus"></i>
 			</el-upload>
 		</el-form-item>
-		<el-form-item label='身份证人像面:'>
+		<el-form-item :label='$t(`other["身份证人像面:"]`)'>
 			<div class="upload-imgList" v-show='people'>
 				<i class="el-icon-close" @click='delimg3' v-if='!check2()'></i>
 				<img :src="people" alt="">
@@ -374,7 +374,7 @@ width="30%"
 	</el-form>
 </el-dialog>
 <!--新建子账户-->
-<el-dialog title="新建子账户" @close='addKidUsers={}' :visible.sync="add_user_dialog" width="30%" center>
+<el-dialog :title="$t(`other["新建子账户"]`)" @close='addKidUsers={}' :visible.sync="add_user_dialog" width="30%" center>
 	<el-form :model="addKidUsers" label-width="0px">
 		<el-form-item>
 			<el-input v-model="addKidUsers.kidName" :placeholder="$t(`user['子账户昵称']`)"></el-input>
@@ -392,7 +392,7 @@ width="30%"
 	</el-form>
 </el-dialog>
 <!-- google 认证 -->
-<el-dialog title="Google 设置" @close='add_google_form={}' :visible.sync="add_google_dialog" width="50%" center>
+<el-dialog :title="$t(`other["Google 设置"]`)" @close='add_google_form={}' :visible.sync="add_google_dialog" width="50%" center>
 	<div class="qcrode_intr">
 		<div class="qcrode">
 			<vue-qrs :text="qcrode_text" height="200" width="200"></vue-qrs>

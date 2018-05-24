@@ -10,7 +10,7 @@
 				 	<div class='test-flex'>
 				 		<div v-for='(card,inxs) in item_list.card' style='width:20%;height:180px'>
 				 			<img src="/static/hamburger.png" alt="">
-							<p>{{card.msg}}<el-button type='success' size='mini' @click='push(inxs)'>编辑</el-button></p>
+							<p>{{card.msg}}<el-button type='success' size='mini' @click='push(inxs)'>{{$t('other["编辑"]')}}</el-button></p>
 				 		</div>
 				 	</div>
 				</el-carousel-item>

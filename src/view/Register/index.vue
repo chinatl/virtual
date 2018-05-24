@@ -17,7 +17,7 @@
                 <div class="form-group">
                     <div class="form-control">
                     	<input autocomplete="new-password" :placeholder="$t(`login['登录密码']`)" type="password"  v-model='form.password'@keyup='check_strong'/>
-						<p id="pass">当前密码强度：{{strong}}</p>
+						<p id="pass">{{$t('other["当前密码强度"]')}}：{{strong}}</p>
                     </div>
                 </div>
                 <div class="form-group">

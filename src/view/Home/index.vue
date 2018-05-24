@@ -5,8 +5,8 @@
 			<el-carousel-item v-for="(i,v) in item" :key="v">
 		  		<div class='swiper_img' :style="i">
 		  			<div class="con cotent_swiper">
-		  				<h3>太空莲（SPC）独家首发</h3>
-		  				<p class="title_swiper">交易市场：SPC/BTC、SPC/QTUM</p>
+		  				<h3>{{$t('other["太空莲"]')}}（SPC）{{$t('other["独家首发"]')}}</h3>
+		  				<p class="title_swiper">{{$t('other["交易市场"]')}}：SPC/BTC、SPC/QTUM</p>
 						<p><el-button type="danger">{{$t('home["查看详情"]')}}</el-button></p>
 		  			</div>
 		  		</div>
