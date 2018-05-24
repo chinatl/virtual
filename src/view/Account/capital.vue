@@ -46,7 +46,7 @@
 <el-table-column align="center" :label="$t(`account['操作']`)" width='250'>
 	<template slot-scope="scope">
         <span class="cap_current" @click='included(scope.row)' v-if='$store.state.userAccount.length'>{{$t('account["划入"]')}}</span>
-        <span class="cap_no_current" >{{$t('account["划入"]')}}</span>
+        
         <span class="cap_current" @click='draw(scope.row)' v-if='scope.row.vTotal && $store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
         <span class="cap_no_current" v-if='!scope.row.vTotal || !$store.state.userAccount.length'>{{$t('account["划出"]')}}</span>
         <span :class="scope.row.isTopUp || $store.state.user.mainUsersId ? 'cap_no_current' : 'cap_current' ">

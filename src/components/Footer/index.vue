@@ -22,7 +22,7 @@
 				<dd><span>联系QQ：</span>{{concat.qq}}</dd>
 				<dd><span>联系电话：</span>{{concat.phone}}</dd>
 				<dd><span>联系微博：</span>{{concat.microBlog}}</dd>
-				<dd><span>qq群：</span>{{concat.qqGroup}}</dd>
+				<dd><span>QQ群：</span>{{concat.qqGroup}}</dd>
 				<dd><span>联系微信：</span>{{concat.wechat}}</dd>
 			</dl>
 		</div>
