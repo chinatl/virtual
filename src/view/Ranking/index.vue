@@ -20,7 +20,7 @@
 		<div class="con ranking">
 			<div class="loading" v-show='loading'><my-loading></my-loading></div><!--loading 动画-->
 			<div class="more-loading" v-show='more'><my-more></my-more></div><!--loading 动画-->
-			<div class="ranking-item" v-for ='i in page_data'>
+			<div class="ranking-item" v-for ='(i,iiiii) in page_data'>
 				<el-card class="box-card">
 				  <div slot="header" class="clearfix">
 					  <div  style='float:right;padding-top:2px' >
@@ -28,7 +28,7 @@
 					  </div>
 					  <h3 class="h3_title"><img :src="i.markUrl" alt="" class="markUrl" >{{i.vName}}</h3>
 					  <div class="p_title">
-					  	<p v-show='getuser(i)'>{{$t('ranking["排名"]')}}：{{getRank(i)}} {{$t('ranking["预计奖励"]')}}({{getPrice(i)}}){{i.vName}}：- <el-button size='mini' :type='panduan(i) ? "info":"success"'  @click='receive(i)' :disabled="panduan(i)">{{panduan(i)? "已领取":"领取"}}</el-button></p>
+					  	<p v-show='getuser(i)'>{{$t('ranking["排名"]')}}：{{getRank(i)}} {{$t('ranking["预计奖励"]')}}({{getPrice(i)}}){{nav_data[current].vName}}：- <el-button size='mini' :type='panduan(i) ? "info":"success"'  @click='receive(i)' :disabled="panduan(i)">{{panduan(i)? "已领取":"领取"}}</el-button></p>
 					  </div>
 				  </div>
 				  <div>
@@ -47,34 +47,34 @@
 </el-table-column>
 <el-table-column align='center' label="UID" width='64'>
 	<template slot-scope="scope">
-														<span>{{scope.row.uid}}</span>
-													</template>
+																				<span>{{scope.row.uid}}</span>
+																			</template>
 </el-table-column>
 <el-table-column align='center' :label="$t(`footer['用户昵称']`)">
 	<template slot-scope="scope">
-    <span>{{ scope.row.nickName && scope.row.nickName.slice(0,3) +'****'}}</span>
-    </template>
+							<span>{{ scope.row.nickName && scope.row.nickName.slice(0,3) +'****'}}</span>
+							</template>
 </el-table-column>
-<el-table-column align='right' :label="$t(`ranking['交易额']`)+' '+i.vName" width='80'>
+<el-table-column align='right' :label="$t(`ranking['交易额']`)+' '+(nav_data[current] && nav_data[current].vName)" width='80'>
 	<template slot-scope="scope">
-		<span>{{scope.row.sumAmount}}</span>
-	</template>
+								<span>{{scope.row.sumAmount}}</span>
+							</template>
 </el-table-column>
 <el-table-column align='right' :label="$t(`ranking['预计奖励']`)+ (i.shortName || '暂无')" width='85'>
 	<template slot-scope="scope">
-							<span>
-							{{get_gift(scope.$index,i)}}
-							</span>
-						</template>
+													<span>
+													{{get_gift(scope.$index,i)}}
+													</span>
+												</template>
 </el-table-column>
 <!--
-<el-table-column prop="address">
-    <template slot-scope="scope">
-	<el-button type="success" size="mini" round
-						 @click='receive(scope.row.userId,i,scope.$index)'>{{$t('ranking["领取"]')}}</el-button>
-</template>
-</el-table-column>
--->
+						<el-table-column prop="address">
+							<template slot-scope="scope">
+							<el-button type="success" size="mini" round
+												 @click='receive(scope.row.userId,i,scope.$index)'>{{$t('ranking["领取"]')}}</el-button>
+						</template>
+						</el-table-column>
+						-->
 </el-table>
 </div>
 </el-card>
@@ -99,13 +99,13 @@
 				<span>{{scope.row.nickName && scope.row.nickName.slice(0,3) +'****'}}</span>
 			</template>
 		</el-table-column>
-		<el-table-column :label="$t(`ranking['交易额']`)+flag.vName" align='right'>
+		<el-table-column :label="$t(`ranking['交易额']`)+ (nav_data[current] && nav_data[current].vName)" align='right'>
 			<template slot-scope="scope">
 						<span>{{scope.row.sumAmount}}</span>
 					</template>
 		</el-table-column>
 
-		<el-table-column :label="$t(`ranking["预计奖励"]`) + (flag.shortName || $t(`other["暂无"]`)')" align='right'>
+		<el-table-column :label='$t(`ranking["预计奖励"]`) + (flag.shortName || $t(`other["暂无"]`))' align='right'>
 			<template slot-scope="scope">
 						<span>{{get_gift(scope.$index,flag)}}</span>
 					</template>
@@ -249,13 +249,13 @@
 			get_gift(index, i) {
 				if (index < 3) {
 					return i.cardinal1_3 - index * i.decrease1_3
-				} else if (i >= 3 && i < 10) {
+				} else if (index >= 3 && index < 10) {
 					return i.cardinal4_10 - (index - 3) * i.decrease4_10
-				} else if (i >= 10 && i < 20) {
+				} else if (index >= 10 && index < 20) {
 					return i.cardinal11_20 - (index - 10) * i.decrease11_20
-				} else if (i >= 20 && i < 50) {
+				} else if (index >= 20 && index < 50) {
 					return i.cardinal21_50 - (index - 20) * i.decrease21_50
-				} else if (i >= 50 && i < 100) {
+				} else if (index >= 50 && index < 100) {
 					return i.cardinal51_100 - (index - 50) * i.decrease51_100
 				}
 			},
