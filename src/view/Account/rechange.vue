@@ -65,12 +65,12 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['到账状态']`)">
 	<template slot-scope="scope">
-						<span>{{scope.row.accountStatus}}</span>
-						</template>
+			<span>{{scope.row.accountStatus == 0 ?  $t(`else['未到账']`) : $t(`else['已到账']`) }}</span>
+	</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['充值金额']`)">
 	<template slot-scope="scope">
-						<span>{{scope.row.rechargeNum}}</span>
+						<span>{{scope.row.rechargeNum | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['处理时间']`)">

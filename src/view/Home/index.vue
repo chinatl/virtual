@@ -47,34 +47,37 @@
 	<template slot-scope="scope">
 						<span>
 						<img :src="scope.row.markUrl" alt="" style='width:20px;margin-right:6px;vertical-align:top'>
-							{{scope.row.vName}}
+							{{(scope.row.vName && (scope.row.vName.split('_')[0] + '/' + scope.row.vName.split('_')[1])) | filter_num}}
 						</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['最新单价']`)">
 	<template slot-scope="scope">
-		<span>{{scope.row.latestPrize}}</span>
+		<span>{{scope.row.latestPrize | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[1]}}</span>
 	</template>
 </el-table-column>
 
 <el-table-column align="center" :label="$t(`home['24h最大价格']`)">
 	<template slot-scope="scope">
-					<span style="color:rgb(253, 49, 91)">{{scope.row.maxprize}}</span>
+					<span style="color:rgb(253, 49, 91)">{{scope.row.maxprize | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[1]}}</span>
 					</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['24h最小价格']`)">
 	<template slot-scope="scope">
-					<span style="color:rgb(48, 194, 150)">{{scope.row.minprize}}</span>
+					<span style="color:rgb(48, 194, 150)">{{scope.row.minprize | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[1]}}</span>
 					</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['24h总金额']`)">
 	<template slot-scope="scope">
-					<span>{{scope.row.sumAnout}}</span>
+					<span>{{scope.row.sumAnout | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[0]}}</span>
 					</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['涨跌幅']`)" sortable prop='trend'>
 	<template slot-scope="scope">
-					<span :style='{color: scope.row.roseFall >= 0 ? "rgb(48, 194, 150)" : "rgb(253, 49, 91)"}'>{{scope.row.roseFall}}</span>
+					<span :style='{color: scope.row.roseFall < 0 ? "rgb(48, 194, 150)" : "rgb(253, 49, 91)"}'>
+						{{scope.row.roseFall > 0 ? '+' : null}}
+						{{scope.row.roseFall && scope.row.roseFall.toFixed(2)}} %
+					</span>
 					</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`home['6小时走势']`)">
@@ -210,8 +213,9 @@
 				}
 			},
 			getColor() {
-				var arr = ['orange', 'red', 'blue', 'black', 'green'];
-				return [arr[Math.floor(Math.random() * 5)]]
+				var arr = ['#aaaaaa', 'red', 'blue', 'black', 'green'];//在这配置
+//				return [arr[Math.floor(Math.random() * 5)]]
+				return ['red']
 			},
 			getRound(maxPrice, list) {
 				if (!list || list.length === 0 || list.length === 1) {

@@ -4,7 +4,17 @@
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
 		  	<span style="font-size:14px;font-weight:bold">{{$t('other["委托记录"]')}}</span>
+		  	
 			<div  style="float: right;margin-top:-9px">
+				 <el-select v-model="formInline.lishi" 
+				 style='width:240px;margin-right:20px'
+				 @change='init'
+				 size='small'
+				 filterable>
+				     <el-option value="0" label='全部委托'></el-option>
+				     <el-option value="1" label='历史委托'></el-option>
+				     <el-option value="2" label='当前委托'></el-option>
+				  </el-select> 
 				 <el-select v-model="formInline.teadeMarket" 
 				 style='width:240px;margin-right:20px'
 				 @change='init'
@@ -18,7 +28,6 @@
 					  :value="item.tradeMarket">
 					</el-option>
 				  </el-select> 
-				  </el-select>
 			</div>
 		  </div>
 		  <div class="select">
@@ -41,7 +50,7 @@
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["委托价/成交均价"]`)'>
 	<template slot-scope="scope">
-						<span>{{scope.row.averagePrize}}</span>
+						<span>{{scope.row.prize + '/' + scope.row.averagePrize}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["委托类型"]`)' prop='date'>
@@ -51,12 +60,12 @@
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["剩余可交易的数量"]`)'>
 	<template slot-scope="scope">
-							<span>{{scope.row.leftAmount}}</span>
+							<span>{{scope.row.leftAmount | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["成交总金额"]`)'>
 	<template slot-scope="scope">
-							<span>{{scope.row.leftCount}}</span>
+							<span>{{scope.row.leftCount | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["订单状态"]`)'>
@@ -71,7 +80,8 @@
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["操作"]`)'>
 	<template slot-scope="scope">
-           <el-button type='success' size='mini' @click='cancel(scope.row.id)'>{{$('other["撤销"]')}}</el-button>
+           <el-button type='success' size='mini' @click='cancel(scope.row.id)'
+            v-if='scope.row.poolStatus === 0 || scope.row.poolStatus === 2'>{{$t('other["撤销"]')}}</el-button>
 	</template>
 </el-table-column>
 </el-table>
@@ -97,7 +107,7 @@
 					teadeMarket: '',
 					pageNo: 1,
 					pageSize: 5,
-					lishi: '1'
+					lishi: '0'
 				},
 				total: 5,
 				list: [],
@@ -105,9 +115,15 @@
 					value: '',
 					btc: ''
 				},
+				vName:'',
+				shortName:'',
 			}
 		},
 		created() {
+			var home_data = window.location.href.split('?')[1];
+			if (home_data) {
+				this.formInline.teadeMarket = home_data;
+			}
 			Get({
 				url: 'pool/findAllTradeMarket',
 				success: res => {
@@ -135,14 +151,14 @@
 							this.vloading = false;
 							if (res.code === 0) {
 								this.$message({
-									message: '撤销成功',
+									message: res.data,
 									type: 'success',
 									duration: 3000
 								});
 								this.init()
 							} else {
 								this.$message({
-									message: '撤销失败',
+									message: res.data,
 									type: 'error',
 									duration: 2000
 								});
@@ -162,10 +178,12 @@
 			onSubmit() {
 
 			},
-			handleSizeChange() {
+			handleSizeChange(index) {
+				this.formInline.pageSize = index;
 				this.init()
 			},
-			handleCurrentChange() {
+			handleCurrentChange(index) {
+				this.formInline.pageNo = index;
 				this.init()
 			},
 			init() {
@@ -182,7 +200,7 @@
 						this.loading = false;
 						if (res.code === 0) {
 							this.list = res.data;
-							this.total = res.total;
+							this.total = res.extra.pageData.totalCount;
 						}
 					},
 					fail: res => {

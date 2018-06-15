@@ -61,7 +61,7 @@
 				},
 				strong: '',
 				email_regular: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
-				phone_regular: /^(0|86|17951)?(13[0-9]|15[012356789]|198|17[678]|18[0-9]|14[57])[0-9]{8}$/,
+				phone_regular: /^\d*_?\d*$/,
 				fullscreenLoading: false,
 				oc_email_dialog: true
 			}
@@ -83,15 +83,15 @@
 			check_strong() {
 				var num = this.getNumber(this.form.password);
 				if (num === 0) {
-					this.strong  = '请输入6位数以上密码'
-				}else if(num === 1){
-					this.strong  = '弱'
-				}else if(num === 2){
-					this.strong  = '中'
-				}else if(num === 3){
-					this.strong  = '强'
-				}else if(num === 4){
-					this.strong  = '极强'
+					this.strong = '请输入6位数以上密码'
+				} else if (num === 1) {
+					this.strong = '弱'
+				} else if (num === 2) {
+					this.strong = '中'
+				} else if (num === 3) {
+					this.strong = '强'
+				} else if (num === 4) {
+					this.strong = '极强'
 				}
 			},
 			get_verification(url, data, str, type) {

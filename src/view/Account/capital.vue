@@ -23,7 +23,7 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['总额']`)" width='200'>
 	<template slot-scope="scope">
-						<span>{{scope.row.vTotal + scope.row.frozenTotal}}</span>
+						<span>{{(scope.row.vTotal + scope.row.frozenTotal) | filter_num}}</span>
 						</template>
 </el-table-column>
 <!--
@@ -35,12 +35,12 @@
 -->
 <el-table-column align="center" :label="$t(`account['可用']`)" prop='date' width='150'>
 	<template slot-scope="scope">
-		<span>{{scope.row.vTotal}}</span>
+		<span>{{scope.row.vTotal | filter_num}}</span>
 	</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['冻结']`)">
 	<template slot-scope="scope">
-		<span>{{scope.row.frozenTotal}}</span>
+		<span>{{scope.row.frozenTotal | filter_num}}</span>
 	</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`account['操作']`)" width='250'>
@@ -74,7 +74,7 @@
 				<el-dropdown @command="handleCommand">
 					<div class="el-dropdown-link">
 						<h3 style="width:100%;z-index:100">{{included_moren.nickName}}</h3>
-						<p>可用{{now_market}}：{{number}}</p>
+						<p>可用{{now_market}}：{{number | filter_num}}</p>
 						<i class="el-icon-arrow-down el-icon--right" style="position:absolute;right:-80px;top:0;z-index:20"></i>
 					</div>
 					<el-dropdown-menu slot="dropdown">
@@ -88,7 +88,7 @@
 			<div class="img"></div>
 			<div class="introduce">
 				<h3>{{$store.state.user.nickName}}</h3>
-				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money}}</p>
+				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money | filter_num}}</p>
 			</div>
 		</div>
 	</div>
@@ -111,7 +111,7 @@
 			<div class="img"></div>
 			<div class="introduce">
 				<h3>{{$store.state.user.nickName}}</h3>
-				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money}}</p>
+				<p>{{$t('other["可用"]')}}{{now_market}}：{{my_money | filter_num}}</p>
 			</div>
 		</div>
 		<div class="include-arrow">{{$t('other["转入"]')}}{{now_market}}{{$t('other["到"]')}}</div>

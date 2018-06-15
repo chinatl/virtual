@@ -36,7 +36,7 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`other['当天时间']`)">
     <template slot-scope="scope">
-		<span>{{scope.row.thedayTime |parseTime( '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+		<span>{{scope.row.subscriptionTime |parseTime( '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
 	</template>
 </el-table-column>
 </el-table>

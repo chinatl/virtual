@@ -18,7 +18,7 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`footer['单价']`)">
 	<template slot-scope="scope">
-		<span>{{scope.row.fb_price}}</span>
+		<span>{{scope.row.fb_price | filter_num}}</span>
 	</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`footer['交易额度限制']`)">
@@ -26,7 +26,7 @@
 		<span>{{scope.row.fb_min_value + '-' + scope.row.fb_max_value}}</span>
 	</template>
 </el-table-column>
-<el-table-column align="center"  :label="$t(`footer['支付方式']`)">
+<el-table-column align="center" :label="$t(`footer['支付方式']`)">
 	<template slot-scope="scope">
 		<span>
 			<img :src="require('@/assets/card.svg')" alt="" v-show='scope.row.user_bank_card' style='width:20px'>
@@ -44,11 +44,11 @@
 -->
 <el-table-column align="center" :label="$t(`footer['剩余可交易数量']`)">
 	<template slot-scope="scope">
-					<span>{{scope.row.v_total}}</span>
+					<span>{{scope.row.v_total | filter_num}}</span>
 				</template>
 </el-table-column>
 
-<el-table-column align="center" :label="$t(`footer['操作']`)"  width='80' v-if='isnormal !== "true"'>
+<el-table-column align="center" :label="$t(`footer['操作']`)" width='80' v-if='isnormal !== "true"'>
 	<template slot-scope="scope">
 		<el-button type='success' size='mini' @click='buy(scope.row)' v-if='scope.row.fb_is_open '>{{$t(`footer['购买']`)}}</el-button>
 		<el-button type='info' size='mini'  v-if='!scope.row.fb_is_open'>{{$t(`footer['暂停']`)}}</el-button>
@@ -63,10 +63,14 @@
 <el-dialog :title="$t(`footer['请确认你的买入订单信息']`)" :visible.sync="dialogFormVisible" width='40%' align='center'>
 	<el-form :model="form" label-width="120px">
 		<el-form-item :label="$t(`footer['买入数量']`)+'：'">
-			<el-input size='small' v-model='form.amount' type='number' @keyup.native='changeNum'></el-input>
+			<el-input size='small' v-model='form.amount' type='number' @keyup.native='changeNum'>
+				<span slot="suffix" class="el-input__icon" style="color:#000">QC</span>
+			</el-input>
 		</el-form-item>
 		<el-form-item :label="$t(`footer['金额']`)+'：'">
-			<el-input size='small' v-model='allprize' disabled></el-input>
+			<el-input size='small' v-model='allprize' disabled>
+				<span slot="suffix" class="el-input__icon" style="color:#000">CNY</span>
+			</el-input>
 		</el-form-item>
 		<el-form-item :label="$t(`footer['交易方式']`)+'：'" align='left'>
 			<el-radio-group v-model="form.payment">
@@ -82,14 +86,14 @@
 	</el-form>
 </el-dialog>
 
-<el-dialog :title="$t(`footer['请确认你的买入订单信息']`)"  :visible.sync="titleForm" width='40%'>
+<el-dialog :title="$t(`footer['请确认你的买入订单信息']`)" :visible.sync="titleForm" width='40%'>
 	<div class="title-lox">
 		<el-form :model="form" label-width="160px">
 			<!--英航卡-->
-			<el-form-item :label="$t(`footer['开户行']`)+'：'"  v-if='form.payment == "0"'>
+			<el-form-item :label="$t(`footer['开户行']`)+'：'" v-if='form.payment == "0"'>
 				<span>{{form.user_bank}}</span>
 			</el-form-item>
-			<el-form-item :label="$t(`footer['户名']`)+'：'"  v-if='form.payment == "0"'>
+			<el-form-item :label="$t(`footer['户名']`)+'：'" v-if='form.payment == "0"'>
 				<span>{{form.user_bank_user}}</span>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['银行卡号']`)+'：'" v-if='form.payment == "0"'>
@@ -100,12 +104,12 @@
 				<img :src="form.user_wechar" alt="" style="width:250px">
 			</el-form-item>
 			<!--支付宝收款码-->
-			<el-form-item :label="$t(`footer['支付宝收款码']`)+'：'"  v-if='form.payment == "1"'>
+			<el-form-item :label="$t(`footer['支付宝收款码']`)+'：'" v-if='form.payment == "1"'>
 				<img :src="form.user_alipay" alt="" style="width:250px">
 			</el-form-item>
 			<!--支付宝收款码-->
 			<el-form-item :label="$t(`footer['转账金额']`)+'：'">
-				<span>{{form.amount * form.fb_price}} </span> CNY
+				<span>{{(form.amount * form.fb_price) | filter_num}} </span> CNY
 			</el-form-item>
 			<el-form-item :label="$t(`footer['上传付款截图']`)+'：'">
 				<div class="upload-imgList" v-show='people'>
@@ -139,7 +143,7 @@
 	export default {
 		data() {
 			return {
-				config:config,
+				config: config,
 				people: '',
 				loading: true,
 				formLabelWidth: 120,
@@ -201,21 +205,31 @@
 		},
 		methods: {
 			gotopay() {
-				if (!this.people) {
+//				if (!this.people) {
+//					this.$message({
+//						message: '请上传转账截图',
+//						type: 'error'
+//					});
+//					return
+//				}
+				this.$confirm('确认下单吗', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.allloading = true;
+					this.data.sellerId = this.form.user_id;
+					this.data.payment = this.form.payment;
+					this.data.amount = this.form.amount;
+					this.data.prize = this.fb_price;
+					this.data.order_number = this.remark;
+					this.$refs.upload3.submit();
+				}).catch(res => {
 					this.$message({
-						message: '请上传转账截图',
-						type: 'error'
+						message: '已取消此操作',
+						type: 'warning'
 					});
-					return
-				}
-				this.allloading = true;
-				this.data.sellerId = this.form.user_id;
-				this.data.payment = this.form.payment;
-				this.data.amount = this.form.amount;
-				this.data.prize = this.fb_price;
-				this.data.order_number = this.remark;
-				this.$refs.upload3.submit();
-
+				})
 			},
 			successload(res) {
 				this.allloading = false;
@@ -244,13 +258,24 @@
 			},
 
 			canel_trade() {
-				this.$message({
-					message: '已取消交易',
+				this.$confirm('确认取消下单吗', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
 					type: 'warning'
-				});
-				this.form = {};
-				this.dialogFormVisible = false;
-				this.titleForm = false;
+				}).then(() => {
+					this.$message({
+						message: '已取消交易',
+						type: 'warning'
+					});
+					this.form = {};
+					this.dialogFormVisible = false;
+					this.titleForm = false;
+				}).catch(res => {
+					this.$message({
+						message: '已取消此操作',
+						type: 'warning'
+					});
+				})
 			},
 			agree_title() {
 				if (!this.form.amount) {
@@ -275,10 +300,20 @@
 					});
 					return
 				}
-				
-				this.dialogFormVisible = false;
-				this.titleForm = true;
-				this.remark = Math.floor(Math.random() * 90000 + 10000);
+				this.$confirm('确认下单吗', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.dialogFormVisible = false;
+					this.titleForm = true;
+					this.remark = Math.floor(Math.random() * 90000 + 10000);
+				}).catch(res => {
+					this.$message({
+						message: '已取消此操作',
+						type: 'warning'
+					});
+				})
 			},
 			changeNum() {
 				this.allprize = this.fb_price * this.form.amount;

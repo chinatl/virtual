@@ -7,8 +7,6 @@ import Register from '@/view/Register'; //注册
 
 import Subscription from '@/view/Subscription'; //认购
 import Ranking from '@/view/Ranking'; //认购
-import Test from '@/view/Test'; //认购
-import Test1 from '@/view/Test/index1'; //认购
 
 import Account from '@/view/Account';
 import capital from '@/view/Account/capital';
@@ -37,6 +35,8 @@ import User_api from '@/view/User/api';
 import Blog from '@/view/Blog'
 import BlogDesc from '@/view/Blog/desc'
 
+/*忘记密码*/
+import Forget from '@/view/forget';
 Vue.use(Router)
 
 export default new Router({
@@ -219,13 +219,9 @@ export default new Router({
             name: 'BlogDesc',
             component: BlogDesc
     }, {
-            path: '/test',
-            name: 'test',
-            component: Test
-    }, {
-            path: '/test1',
-            name: 'test',
-            component: Test1
+            path: '/forget',
+            name: 'Forget',
+            component: Forget
     }
   ]
 })

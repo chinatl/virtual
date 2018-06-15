@@ -21,7 +21,7 @@
 				   style='width:240px;margin-right:20px'
 				   size='small'
 				 	@change='init'
-				   :placeholder='$(`other["请选择"]`)'>
+				   :placeholder='$t(`other["请选择"]`)'>
 					<el-option
 					  v-for="item in options1"
 					  :key="item.value"
@@ -34,7 +34,7 @@
 		  <div class="select">
 		 	<el-table :data="list" 
 				 fit highlight-current-row
-				 sort-method='hello'
+				 sort-method='date'
 				 border
 				   v-loading="loading"
 			   :default-sort = "{prop: 'date', order: 'descending'}"
@@ -54,29 +54,29 @@
 						<span>{{scope.row.billType}}</span>
 						</template>
 </el-table-column>
-<el-table-column align="center" :label='$t(`other["时间"]`)' sortable prop='date' width='200'>
+<el-table-column align="center" :label='$t(`other["时间"]`)'  width='200'>
 	<template slot-scope="scope">
 							<span>{{scope.row.createTime}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["扣除/增加"]`)'>
 	<template slot-scope="scope">
-							<span :style="{color: scope.row.currentAmount - scope.row.lastAmount >0 ? '#10fb0a' : '#fc0511'}">{{scope.row.currentAmount - scope.row.lastAmount}}</span>
+							<span :style="{color: scope.row.lastAmount - scope.row.currentAmount >0 ? 'rgb(48, 194, 150)' : 'rgb(253, 49, 91)'}">{{(scope.row.lastAmount - scope.row.currentAmount).toFixed(2) | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["余额(交易前)"]`)'>
 	<template slot-scope="scope">
-							<span>{{scope.row.currentAmount}}</span>
+							<span>{{scope.row.currentAmount | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["余额(交易后)"]`)'>
 	<template slot-scope="scope">
-							<span>{{scope.row.lastAmount}}</span>
+							<span>{{scope.row.lastAmount | filter_num}}</span>
 						</template>
 </el-table-column>
 </el-table>
 <div style="text-align:right;margin:10px 0">
-	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" background :current-page="pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="formInline.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" background :current-page="pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	</el-pagination>
 </div>
 </div>
@@ -111,6 +111,7 @@
 		},
 		methods: {
 			handleSizeChange(index) {
+				this.pageSize = index;
 				this.init()
 			},
 			handleCurrentChange(index) {
@@ -160,7 +161,8 @@
 				url: 'finance/selvirtualCurrency',
 				success: res => {
 					if (res.code === 0) {
-						this.options = res.data.map(res => {
+						var arr = res.data.slice(1);
+						this.options = arr.map(res => {
 							return {
 								value: res.tradeMarket,
 								label: res.tradeMarket

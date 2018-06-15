@@ -20,6 +20,11 @@
 			<div class="subscription" style="margin-left: 20px;" >
 				<p role="button"><router-link to='/ranking' style='font-size:14px'>{{$t('menu["交易排行榜"]')}}</router-link></p>
 			</div>
+<!--
+			<div class="subscription" style="margin-left: 20px;" v-show='$store.state.isLogin'>
+				<p role="button"><router-link to='/account' style='font-size:14px'>{{$t('account["法币交易"]')}}</router-link></p>
+			</div>
+-->
 			<div class="site-menu cart">
 				<p role="button">{{$t('menu["网站导航"]')}}</p>
 				<div class="site-menu-dropdown">

@@ -51,7 +51,7 @@
 		</span>
 	</template>
 </el-table-column>
-<el-table-column align="center" :label="$t(`footer['买/卖']`)"  width='80'>
+<el-table-column align="center" :label="$t(`footer['买/卖']`)" width='80'>
 	<template slot-scope="scope">
 		<span :style='{color:!scope.row.sell_buy? "green":"red"}'>{{ !scope.row.sell_buy ? $t(`footer['买入']`) : $t(`footer['卖出']`)}}</span>
 	</template>
@@ -63,20 +63,20 @@
 </el-table-column>
 <el-table-column align="center" :label="$t(`footer['订单数量']`)" width='120'>
 	<template slot-scope="scope">
-		<span>{{scope.row.amount}}</span>
+		<span>{{scope.row.amount | filter_num}}</span>
 	</template>
 </el-table-column>
-<el-table-column align="center"  :label="$t(`footer['单价']`)"  width='60'>
+<el-table-column align="center" :label="$t(`footer['单价']`)" width='60'>
 	<template slot-scope="scope">
-		<span>{{scope.row.prize}}</span>
+		<span>{{scope.row.prize | filter_num}}</span>
 	</template>
 </el-table-column>
 <el-table-column align="center" :label="$t(`footer['订单金额']`)">
 	<template slot-scope="scope">
-		<span>{{scope.row.amount * scope.row.prize}}</span>
+		<span>{{(scope.row.amount * scope.row.prize) | filter_num}}</span>
 	</template>
 </el-table-column>
-<el-table-column align="center"  :label="$t(`footer['订单状态']`)"  width='120'>
+<el-table-column align="center" :label="$t(`footer['订单状态']`)" width='120'>
 	<template slot-scope="scope">
 		<span>
 			{{scope.row.pool_status === 0 ?'未成交':null}}<!-- 上传图片-->
@@ -105,10 +105,10 @@
 	</template>
 </el-table-column>
 -->
-<el-table-column align="center"  :label="$t(`footer['操作']`)" width='98' v-if='isnormal === "true"'>
+<el-table-column align="center" :label="$t(`footer['操作']`)" width='98'>
 	<template slot-scope="scope">
-<!--		<el-button type='danger' size='mini' @click='revoke(scope.row)' v-if='scope.row.pool_status === 0 '>取消交易</el-button>-->
-		<el-button type='success' size='mini' @click='revoke(scope.row)' v-if='scope.row.pool_status === 0 '>{{$t(`footer['确认交易']`)}}</el-button>
+		<el-button type='danger' size='mini' @click='cancelOrder(scope.row)' v-if='scope.row.pool_status === 0 && isnormal === "false" && scope.row.sell_buy '>{{$t(`footer['取消交易']`)}}</el-button>
+		<el-button type='success' size='mini' @click='revoke(scope.row)' v-if='scope.row.pool_status === 0 && isnormal === "true" '>{{$t(`footer['确认交易']`)}}</el-button>
 <!--		<el-button type='success' size='mini' @click='upload(scope.row.id)' v-if='(scope.row.pool_status === 0 || scope.row.pool_status === 2) && scope.row.sell_buy === 0'>上传图片</el-button> -->
 <!--		<el-button type='success' size='mini' @click='apply(scope.row.id)' v-if='scope.row.poolStatus === 0 && scope.row.sellBuy === 0'>申请确认</el-button>-->
 	</template>
@@ -127,16 +127,21 @@
 			<div class="content_div">
 				<p>
 					<span>{{$t(`footer['用户昵称']`)}}：</span>
-					<span class="dsadasd">{{this.big.Mnickname}}</span>
+					<span class="dsadasd">{{big.Mnickname}}</span>
 				</p>
 				<p>
 					<span>{{$t(`footer['订单数量']`)}}：</span>
-					<span class="dsadasd">{{this.big.amount}} QC</span>
+					<span class="dsadasd">{{big.amount}} QC</span>
 				</p>
 				<p>
-					<span>{{$t(`footer['转账金额']`)}} ：</span>
-					<span class="dsadasd">{{getPirce}}CNY</span>
+					<span>实到数量 ：</span>
+					<span class="dsadasd">{{big.amount * 0.995}} QC</span>
 				</p>
+				<p>
+					<span>转账金额 ：</span>
+					<span class="dsadasd">{{big.amount * 0.99 * big.prize}}CNY</span>
+				</p>
+
 				<p>
 					<span>交易方式：</span>
 					<span>
@@ -162,11 +167,11 @@
 				</p>
 				<p>
 					<span>{{$t(`footer['买家备注']`)}}：</span>
-					<span class="dsadasd">{{this.big.order_number}}</span>
+					<span class="dsadasd">{{big.order_number}}</span>
 				</p>
 				<p>
 					<span>{{$t(`footer['用户姓名']`)}}：</span>
-					<span class="dsadasd">{{this.big.Mrealname}}</span>
+					<span class="dsadasd">{{big.Mrealname}}</span>
 				</p>
 			</div>
 		</div>
@@ -251,11 +256,33 @@
 				if (!this.big.sell_buy) {
 					return this.big.amount * this.big.prize
 				} else {
-					return ((this.big.amount - this.big.fees / 2) * this.big.prize).toFixed(3)
+					return ((this.big.amount - this.big.fees / 2) * this.big.prize)
 				}
 			}
 		},
 		methods: {
+			cancelOrder(row) {
+				Post({
+					url: 'fb/normalCancelOrderOut',
+					data: {
+						orderid: row.id
+					},
+					success: res => {
+						if (res.code === 0) {
+							this.$message({
+								message: res.data,
+								type: 'success'
+							});
+							this.init()
+						} else {
+							this.$message({
+								message: res.data,
+								type: 'error'
+							});
+						}
+					}
+				})
+			},
 			cancel_trade() {
 				var url = '';
 				if (!this.big.sell_buy) { //商家的卖出 1是 in
@@ -307,7 +334,7 @@
 						this.allloading = false;
 						this.cancel_form = false;
 						if (res.code === 0) {
-							
+
 							this.$message({
 								message: res.data,
 								type: 'success'

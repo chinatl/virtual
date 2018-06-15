@@ -123,3 +123,18 @@ export function html2Text(val) {
 export function toThousandslsFilter(num) {
 	return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
+
+export function filter_num(num) {
+	if (typeof num === 'string') {
+		return num
+	}
+	if (typeof num === 'number') {
+		var x = num + '';
+		if (x.includes('e')) {
+			var n = x.replace(/.e-/g,'');
+			return num.toFixed(n-0)
+		} else {
+			return num
+		}
+	}
+}

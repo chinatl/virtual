@@ -57,13 +57,13 @@
 </el-table-column>
 <el-table-column align='right' :label="$t(`ranking['交易额']`)+' '+(nav_data[current] && nav_data[current].vName)" width='80'>
 	<template slot-scope="scope">
-								<span>{{scope.row.sumAmount}}</span>
+								<span>{{scope.row.sumAmount | filter_num}}</span>
 							</template>
 </el-table-column>
 <el-table-column align='right' :label="$t(`ranking['预计奖励']`)+ (i.shortName || '暂无')" width='85'>
 	<template slot-scope="scope">
 													<span>
-													{{get_gift(scope.$index,i)}}
+													{{get_gift(scope.$index,i) | filter_num}}
 													</span>
 												</template>
 </el-table-column>
@@ -101,13 +101,13 @@
 		</el-table-column>
 		<el-table-column :label="$t(`ranking['交易额']`)+ (nav_data[current] && nav_data[current].vName)" align='right'>
 			<template slot-scope="scope">
-						<span>{{scope.row.sumAmount}}</span>
+						<span>{{scope.row.sumAmount | filter_num}}</span>
 					</template>
 		</el-table-column>
 
 		<el-table-column :label='$t(`ranking["预计奖励"]`) + (flag.shortName || $t(`other["暂无"]`))' align='right'>
 			<template slot-scope="scope">
-						<span>{{get_gift(scope.$index,flag)}}</span>
+						<span>{{get_gift(scope.$index,flag) | filter_num}}</span>
 					</template>
 		</el-table-column>
 		<!--
@@ -157,11 +157,11 @@
 			panduan(item) {
 				var rank = item.rank;
 				for (var i = 0; i < rank.length; i++) {
-					if (rank[i].isRankingGet) {
-						return true
+					if (rank[i].isRankingGet === 0 &&  rank[i].userId === this.$store.state.user.id) {
+						return false
 					}
 				}
-				return
+				return true
 			},
 			getRank(item) {
 				var rank = item.rank;
@@ -217,7 +217,7 @@
 						data: {
 							userId: this.$store.state.user.id,
 							giveAmount: giveAmount,
-							giveVirtualCurrencyId: item.vId,
+							giveVirtualCurrencyId: item.virtualId,
 							tradeMarket: item.vName + '_' + this.nav_data[this.current].vName
 						},
 						success: res => {

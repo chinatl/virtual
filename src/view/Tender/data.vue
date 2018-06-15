@@ -101,7 +101,7 @@
 	:visible.sync="email_dialog" width="40%" center>
 		<el-form ref="form" :model="form_card" label-width='140px'>
 			<el-form-item :label="$t(`footer['银行卡开户名']`) +'：'">
-				<el-input v-model="form_card.userBankUser" placeholder="$t(`footer['银行卡开户名']`)"></el-input>
+				<el-input v-model="form_card.userBankUser" :placeholder="$t(`footer['银行卡开户名']`)"></el-input>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['开户银行']`) +'：'">
 				  <el-select v-model="form_card.userBank" filterable :placeholder="$t(`footer['请选择']`)" style='width:100%'>
@@ -122,7 +122,7 @@
 				  </el-select>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['银行卡卡号']`) +'：'">
-				<el-input v-model="form_card.userBankCard" placeholder="$t(`footer['银行卡卡号']`)"></el-input>
+				<el-input v-model="form_card.userBankCard" :placeholder="$t(`footer['银行卡卡号']`)"></el-input>
 			</el-form-item>
 			<el-form-item :label="$t(`footer['银行预留手机号码']`) +'：'">
 				<el-input v-model="form_card.userBankPhone" :placeholder="$t(`footer['银行预留手机号码']`)"></el-input>

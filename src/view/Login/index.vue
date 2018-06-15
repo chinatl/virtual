@@ -26,7 +26,6 @@
 			<div  class="form-group" v-if='user.isphone'>
 				<div  class="form-control">
 					<input autocomplete="off" :placeholder="$t(`login['输入手机验证码']`)" type="text" v-model='form.phone'/>
-					<!---->
 					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_phone_number'>{{$t('login["获取验证码"]')}}</el-button>
 				</div>
 			</div>
@@ -59,9 +58,8 @@
 					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_lophone_number'>{{$t('login["获取验证码"]')}}</el-button>
 				</div>
 			</div>
-			
 			<div class="form-button"><button type="button" class="button" @click='login'><span>{{$t('login["登录"]')}}</span></button></div>
-			<div class="form-other">{{$t('login["还没账号"]')}}？<router-link to="/register">{{$t('login["立即注册"]')}}</router-link></div>
+			<div class="form-other"><span style="float:left"><router-link to="/forget">忘记密码</router-link></span><span style="float:right">{{$t('login["还没账号"]')}}？<router-link to="/register">{{$t('login["立即注册"]')}}</router-link></span></div>
 		</div>
 	</div>
 </div>
@@ -82,7 +80,7 @@
 		},
 		data() {
 			return {
-				userCode: false,
+				userCode: false, //验证码登录
 				indent: '',
 				form: {
 					userName: '',
@@ -100,16 +98,20 @@
 				},
 				fullscreenLoading: false,
 				email_regular: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
-				phone_regular: /^(0|86|17951)?(13[0-9]|198|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/,
+				phone_regular: /^\d*_?\d*$/,
 				user: {
 					isemail: null,
 					isgoogle: null,
 					isphone: null,
 				},
-				get_user: false,
+				get_user: false, //来判断是第几次登录
 				user_phone: null,
 				identifyCodes: "1234567890",
-				identifyCode: ""
+				identifyCode: "",
+				isAddress: false,
+				willSendPhone: '', //将要发送的手机
+				willSendEmail: '', //将要发送的邮箱
+
 			}
 		},
 		mounted() {
@@ -130,13 +132,42 @@
 						this.randomNum(0, this.identifyCodes.length)
 					];
 				}
-				console.log(this.identifyCode);
 			},
 			click_nouse_code() {
 				this.userCode = false;
+				this.user = {
+					isemail: null,
+					isgoogle: null,
+					isphone: null,
+				};
+				this.isAddress = false;
+				this.get_user = false;
+				this.form = {
+					userName: '',
+					password: '',
+					email: '',
+					phone: '',
+					google: '',
+					loginphone: ''
+				};
 			},
 			click_use_code() {
 				this.userCode = true;
+				this.user = {
+					isemail: null,
+					isgoogle: null,
+					isphone: null,
+				};
+				this.isAddress = false;
+				this.get_user = false;
+				this.form = {
+					userName: '',
+					password: '',
+					email: '',
+					phone: '',
+					google: '',
+					loginphone: ''
+				};
 			},
 			get_verification(url, data, str, type) {
 				if (this[str]['get']) {
@@ -181,7 +212,6 @@
 					})
 					return
 				}
-				console.log(data.userName)
 				if (!this.email_regular.test(data.userName) && !this.phone_regular.test(data.userName)) {
 					this.$message({
 						showClose: true,
@@ -222,7 +252,7 @@
 						}
 					})
 				}
-				if (this.email_regular.test(this[str]['userName'])) {
+				if (this.email_regular.test(data.userName)) {
 					this.fullscreenLoading = true;
 					Post({
 						url: 'log/' + url,
@@ -266,19 +296,39 @@
 					this.refreshCode();
 					return
 				}
-				this.get_verification('getVerificationCode', {
+				this.get_verification('getPhoneOrEmailVerification', {
 					userName: this.form.userName,
 					title: '登录验证'
 				}, "phone", "phone")
 			},
 			get_phone_number() {
-				this.get_verification('getVerificationCode', {
-					userName: this.user_phone,
+				var url = '';
+				var str = '';
+				if (this.isAddress && this.phone_regular.test(this.form.userName)) {
+					url = 'getPhoneOrEmailVerification';
+					str = this.form.userName
+				} else {
+					url = 'getVerificationCode';
+					str = this.willSendPhone
+				}
+				this.get_verification(url, {
+					userName: str,
 					title: '登录验证'
 				}, "phone", "phone")
 			},
 			get_email_number() {
-				this.get_verification('getEmailVerificationCode', {}, "email", "email")
+				var url = '';
+				var str = '';
+				if (this.isAddress && this.email_regular.test(this.form.userName)) {
+					url = 'getPhoneOrEmailVerification';
+					str = this.form.userName;
+				} else {
+					url = 'getEmailVerificationCode';
+					str = this.willSendEmail;
+				}
+				this.get_verification(url, {
+					userName: str
+				}, "email", "email")
 			},
 			submit(e) {
 				this.login()
@@ -356,8 +406,8 @@
 					})
 					return
 				}
-				
-				if (!this.get_user) {
+
+				if (!this.get_user) { //第一次登录走这
 					Post({
 						url: 'log/login',
 						data: {
@@ -367,7 +417,11 @@
 						success: res => {
 							loading.close();
 							if (res.code === 0) {
-								if (res.data.isAddress) {
+								var data = res.data;
+								this.isAddress = data.isAddress;
+								this.willSendPhone = data.data.phone;
+								this.willSendEmail = data.data.email;
+								if (data.isAddress) { //异地
 									this.get_user = true;
 									var str = res.data.isAddress + '';
 									sessionStorage.setItem('isAddress', str);
@@ -377,19 +431,22 @@
 										message: '您当前是异地登录，请输入验证码',
 										type: 'warning'
 									});
-									var user = res.data.data;
-									if (user.phone) {
-										this.user.isphone = user.phone;
-										this.user_phone = user.phone;
+									if (data.data.isemail) {
+										this.user.isemail = true;
+									}
+									if (data.data.isphone) {
+										this.user.isphone = true;
+									}
+									this.user.isphone = true;
+									if (this.email_regular.test(this.form.userName)) {
+										this.user.isemail = true;
 										return
 									} else {
-										this.user.isgoogle = res.data.data.email;
-										return
+										this.user.isphone = true;
 									}
+									return
 								}
-								var res_data = res.data.data;
-								this.user_phone = res_data.phone;
-								if (!res_data.isemail && !res_data.isphone && !res_data.isgoogle) {
+								if (!data.data.isemail && !data.data.isphone && !data.data.isgoogle) {
 									Post({
 										url: 'log/login',
 										data: {
@@ -423,9 +480,9 @@
 									})
 								} else {
 									this.get_user = true;
-									this.user.isemail = res.data.data.isemail;
-									this.user.isphone = res.data.data.isphone;
-									this.user.isgoogle = res.data.data.isgoogle;
+									this.user.isemail = data.data.isemail;
+									this.user.isphone = data.data.isphone;
+									this.user.isgoogle = data.data.isgoogle;
 								}
 							} else {
 								this.$message({
@@ -440,6 +497,7 @@
 						}
 					})
 				} else {
+					//第二次登录走这
 					if (this.user.isemail && !this.form.email) {
 						this.$message({
 							showClose: true,
@@ -468,16 +526,42 @@
 
 						return
 					}
-					Post({
-						url: 'log/login',
-						data: {
+					var str = '';
+					var obj = {
+						userName: this.form.userName,
+						password: MD5(this.form.password),
+						isLogin: 'login',
+						phone: this.form.phone,
+						email: this.form.email,
+						google: this.form.google,
+						yidi: str
+					};
+					if (this.phone_regular.test(this.form.userName) && this.isAddress) {
+						obj = {
+							userName: this.form.userName,
+							password: MD5(this.form.password),
+							isLogin: 'login',
+							phone: '',
+							email: this.form.email,
+							google: this.form.google,
+							yidi: this.form.phone
+						}
+					}
+
+					if (this.email_regular.test(this.form.userName) && this.isAddress) {
+						obj = {
 							userName: this.form.userName,
 							password: MD5(this.form.password),
 							isLogin: 'login',
 							phone: this.form.phone,
-							email: this.form.email,
+							email: '',
 							google: this.form.google,
-						},
+							yidi: this.form.email
+						}
+					}
+					Post({
+						url: 'log/login',
+						data: obj,
 						success: res => {
 							loading.close();
 							if (res.code === 0) {

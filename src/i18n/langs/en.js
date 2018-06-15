@@ -1,7 +1,9 @@
 import enLocale from 'element-ui/lib/locale/lang/en'
 const en = {
 	"else": {
-		"手机号": "Cell-phone number "
+		"手机号": "Cell-phone number ",
+		"未到账":"Out of account",
+		"已到账":"Already to account",
 	},
 	"menu": {
 		"提示": " A bulletin on changing the recharge address of the virtual currency ",
@@ -433,6 +435,7 @@ const en = {
 		"app": " App"
 	},
 	"other": {
+		"确认":"confirm",
 		"综合账单": "Comprehensive bill ",
 		"请选择": " Please choose ",
 		"交易市场": " Trading market ",

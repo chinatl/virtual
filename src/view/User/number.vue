@@ -1,5 +1,5 @@
 <template>
-<div class="pay_panel"  v-loading="fullscreenLoading">
+<div class="pay_panel"  v-loading.fullscreen="fullscreenLoading">
 	<div class="pay-content">
 		<el-card class="box-card">
 	    <div slot="header" class="clearfix">
@@ -8,19 +8,22 @@
 			<div class="select">
 				<div :class="'user' === nowUser ? 'users current':'users'">
 					<div class="avatar">
-						<img src="" alt="">
+						<span>{{ $store.state.user.nickName && $store.state.user.nickName[0] }}</span>
 					</div>
 					<div class="info">
-						<p>{{$store.state.user.nickName}}<span class="orange" @click.stop='edit_user($store.state.user,$event)'>{{$t('user["编辑"]')}}</span></p>
+						<p>{{user_account.nickName}}<span class="orange" @click.stop='edit_user($store.state.user,$event)' v-show='!$store.state.user.ischangeName'>{{$t('user["编辑"]')}}</span></p>
 						<p>{{$store.state.user.phone}}</p>
 					</div>
 				</div>
-				<div :class="index === nowUser ? 'users current':'users'" v-for='(item,index) in $store.state.userAccount' style='cursor: pointer;' @click='check_login(item.id,$event)'>
-					<div class="avatar">
-						<img src="" alt="">
+				<div :class="index === nowUser ? 'users current':'users'" v-for='(item,index) in $store.state.userAccount' style='cursor: pointer;'
+				 :key = 'index'
+				 @click='check_login(item.id,$event)'>
+					<div class="avatar" :style='{backgroundColor:"#"+(Math.random()*0xffffff<<0).toString(16)}'  v-once>
+<!--						<img src="" alt="" style='item.nickName'>-->
+						<span>{{item.nickName && item.nickName.slice(0,1)}}</span>
 					</div>
 					<div class="info">
-						<p>{{item.nickName}}<span class="orange" @click.stop='edit_user(item,$event)'>{{$t('user["编辑"]')}}</span></p>
+						<p>{{item.nickName}}<span class="orange" @click.stop='edit_user(item,$event)' v-show='!$store.state.user.ischangeName'>{{$t('user["编辑"]')}}</span></p>
 						<p>{{item.phone}}</p>
 					</div>
 				</div>	
@@ -374,7 +377,7 @@ width="30%"
 	</el-form>
 </el-dialog>
 <!--新建子账户-->
-<el-dialog :title="$t(`other["新建子账户"]`)" @close='addKidUsers={}' :visible.sync="add_user_dialog" width="30%" center>
+<el-dialog :title="$t(`other['新建子账户']`)" @close='addKidUsers={}' :visible.sync="add_user_dialog" width="30%" center>
 	<el-form :model="addKidUsers" label-width="0px">
 		<el-form-item>
 			<el-input v-model="addKidUsers.kidName" :placeholder="$t(`user['子账户昵称']`)"></el-input>
@@ -392,7 +395,7 @@ width="30%"
 	</el-form>
 </el-dialog>
 <!-- google 认证 -->
-<el-dialog :title="$t(`other["Google 设置"]`)" @close='add_google_form={}' :visible.sync="add_google_dialog" width="50%" center>
+<el-dialog :title="$t(`other['Google 设置']`)" @close='add_google_form={}' :visible.sync="add_google_dialog" width="50%" center>
 	<div class="qcrode_intr">
 		<div class="qcrode">
 			<vue-qrs :text="qcrode_text" height="200" width="200"></vue-qrs>
@@ -452,7 +455,7 @@ width="30%"
 		},
 		data() {
 			return {
-				config:config,
+				config: config,
 				headPortrait: '',
 				nationalEmblem: '',
 				people: '',
@@ -529,12 +532,22 @@ width="30%"
 					googlephone: '',
 					googlestartNum: ''
 				},
-				user_account: {}, //用户数组
+				user_account: {
+					nickName:''
+				}, //用户数组
 				email_regular: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
 				phone_regular: /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
 			}
 		},
 		methods: {
+			get_one_name(name) {
+				if (name) {
+					console.log(0)
+					return name[0]
+				} else {
+					console.log(1)
+				}
+			},
 			check_login(id) {
 				this.fullscreenLoading = true;
 				Post({
@@ -543,7 +556,7 @@ width="30%"
 						id: id
 					},
 					success: res => {
-						this.fullscreenLoading = true;
+						this.fullscreenLoading = false;
 						if (res.code == 0) {
 							this.$message({
 								showClose: true,
@@ -560,7 +573,7 @@ width="30%"
 						}
 					},
 					fail: res => {
-						this.fullscreenLoading = true;
+						this.fullscreenLoading = false;
 					}
 				})
 
@@ -746,7 +759,7 @@ width="30%"
 										}
 									},
 									fail: res => {
-										this.fullscreenLoading = true;
+										this.fullscreenLoading = false;
 									}
 								})
 							} else {
@@ -794,7 +807,7 @@ width="30%"
 										}
 									},
 									fail: res => {
-										this.fullscreenLoading = true;
+										this.fullscreenLoading = false;
 									}
 								})
 							} else {
@@ -1013,7 +1026,7 @@ width="30%"
 			}
 		},
 		created() {
-						this.init()
+			this.init()
 		}
 
 	}
@@ -1075,6 +1088,12 @@ width="30%"
 		border-radius: 50%;
 		overflow: hidden;
 		position: relative;
+		text-align: center;
+		line-height: 50px;
+		font-size: 20px;
+		color: #fff;
+		background-color: blue
+
 	}
 
 	.info p {

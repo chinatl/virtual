@@ -60,12 +60,12 @@
 				</el-table-column>
 				<el-table-column align="center" :label="$t(`account['到账状态']`)">
 					<template slot-scope="scope">
-						<span>{{scope.row.accountStatus}}</span>
+						<span>{{scope.row.accountStatus == 0 ?  $t(`else['未到账']`) : $t(`else['已到账']`) }}</span>
 						</template>
 				</el-table-column>
 				<el-table-column align="center" :label="$t(`account['充值金额']`)">
 					<template slot-scope="scope">
-						<span>{{scope.row.rechargeNum}}</span>
+						<span>{{scope.row.rechargeNum | filter_num}}</span>
 						</template>
 				</el-table-column>
 				<el-table-column align="center" :label="$t(`account['处理时间']`)">
@@ -140,7 +140,7 @@
 			<el-form-item :label='$t(`other["冲向地址:"]`)'>
 				<el-input v-model="add_form.address"></el-input>
 			</el-form-item>
-			<el-form-item :label='$t(`other["备注:"]`)'"">
+			<el-form-item :label='$t(`other["备注:"]`)'>
 				<el-input v-model="add_form.remark"></el-input>
 			</el-form-item>
 			<el-form-item align='right'>
