@@ -205,13 +205,13 @@
 		},
 		methods: {
 			gotopay() {
-//				if (!this.people) {
-//					this.$message({
-//						message: '请上传转账截图',
-//						type: 'error'
-//					});
-//					return
-//				}
+				//				if (!this.people) {
+				//					this.$message({
+				//						message: '请上传转账截图',
+				//						type: 'error'
+				//					});
+				//					return
+				//				}
 				this.$confirm('确认下单吗', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -223,7 +223,24 @@
 					this.data.amount = this.form.amount;
 					this.data.prize = this.fb_price;
 					this.data.order_number = this.remark;
-					this.$refs.upload3.submit();
+					if (this.people) {
+						this.$refs.upload3.submit();
+					} else {
+						Post({
+							url: 'fb/addLegalTenderIn',
+							data: this.data,
+							success: res => {
+								this.allloading = false;
+								this.dialogFormVisible = false;
+								this.titleForm = false;
+								this.$message({
+									message: res.data,
+									type: 'success'
+								});
+								this.init();
+							}
+						})
+					}
 				}).catch(res => {
 					this.$message({
 						message: '已取消此操作',
@@ -239,7 +256,6 @@
 					message: res.data,
 					type: 'success'
 				});
-
 				this.init();
 			},
 			errorload(res) {
@@ -339,7 +355,27 @@
 			buy(redact) {
 				this.form = redact;
 				this.fb_price = redact.fb_price;
-				this.dialogFormVisible = true;
+				this.allloading = true;
+				Get({
+					url: 'fb/findOrderIsExist',
+					data: {
+						sellerId: redact.user_id
+					},
+					success: res => {
+						this.allloading = false;
+						if (res.code === 0) {
+							this.dialogFormVisible = true;
+						} else {
+							this.$message({
+								message: res.data,
+								type: 'error'
+							})
+						}
+					},
+					fail: res => {
+						this.allloading = false;
+					}
+				})
 			},
 			agree() {
 				this.dialogFormVisible = false;

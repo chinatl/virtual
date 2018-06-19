@@ -61,7 +61,7 @@
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["扣除/增加"]`)'>
 	<template slot-scope="scope">
-							<span :style="{color: scope.row.lastAmount - scope.row.currentAmount >0 ? 'rgb(48, 194, 150)' : 'rgb(253, 49, 91)'}">{{(scope.row.lastAmount - scope.row.currentAmount).toFixed(2) | filter_num}}</span>
+							<span :style="{color: scope.row.lastAmount - scope.row.currentAmount >0 ? 'rgb(253, 49, 91)' : 'rgb(48, 194, 150)'}">{{(scope.row.lastAmount - scope.row.currentAmount).toFixed(2) | filter_num}}</span>
 						</template>
 </el-table-column>
 <el-table-column align="center" :label='$t(`other["余额(交易前)"]`)'>

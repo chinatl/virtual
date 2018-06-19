@@ -29,7 +29,7 @@
                     <div id="nikeForm" class="form-control">
                         <input autocomplete="off" :placeholder="$t(`login['输入验证码']`)" type="text" v-model='form.verficationCode'/>
                         <!---->
-                        <el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_number'>{{$t('login["获取验证码"]')}}</el-button>
+                        <el-button type='success'  style='position:absolute;top:1px;right:0' :class='form.get ? "getwait-message":""'  @click='get_number'>{{$t('login["获取验证码"]')}}</el-button>
                     </div>
                 </div>	
                 <div class="form-button"><button type="button" class="button" @click='register'><span>{{$t('login["注册"]')}}</span></button></div>
@@ -175,6 +175,12 @@
 													this[str]['get'] = false;
 												}
 											}, 1000)
+										} else {
+											this.$message({
+												showClose: true,
+												message: res.data,
+												type: 'error'
+											});
 										}
 									},
 									fail: res => {
@@ -308,7 +314,27 @@
 	}
 
 </script>
-<style scoped="true">
+<style>
+	.getwait-message {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:active {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:hover {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:focus {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
 	#pass {
 		margin-top: 10px;
 		color: #333;

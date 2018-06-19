@@ -26,14 +26,15 @@
 			<div  class="form-group" v-if='user.isphone'>
 				<div  class="form-control">
 					<input autocomplete="off" :placeholder="$t(`login['输入手机验证码']`)" type="text" v-model='form.phone'/>
-					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_phone_number'>{{$t('login["获取验证码"]')}}</el-button>
+					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0;' :class='phone.get ? "getwait-message":""' @click='get_phone_number'
+					>{{$t('login["获取验证码"]')}}</el-button>
 				</div>
 			</div>
 			<div  class="form-group" v-if='user.isemail'>
 				<div  class="form-control">
 					<input autocomplete="off" :placeholder="$t(`login['输入邮箱验证码']`)" type="text" v-model='form.email'/>
 					<!---->
-					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_email_number'>{{$t('login["获取验证码"]')}}</el-button>
+					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' :class='email.get ? "getwait-message":""' @click='get_email_number'>{{$t('login["获取验证码"]')}}</el-button>
 				</div>
 			</div>
 			<div  class="form-group" v-if='user.isgoogle'>
@@ -55,7 +56,7 @@
 				<div  class="form-control">
 					<input autocomplete="off" :placeholder="$t(`login['输入手机验证码']`)" type="text" v-model='form.loginphone' />
 					<!---->
-					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0' @click='get_lophone_number'>{{$t('login["获取验证码"]')}}</el-button>
+					<el-button type='success' :disabled='form.get' style='position:absolute;top:1px;right:0;' :class='phone.get ? "getwait-message":""' @click='get_lophone_number'>{{$t('login["获取验证码"]')}}</el-button>
 				</div>
 			</div>
 			<div class="form-button"><button type="button" class="button" @click='login'><span>{{$t('login["登录"]')}}</span></button></div>
@@ -586,7 +587,27 @@
 	}
 
 </script>
-<style scoped="true">
+<style>
+	.getwait-message {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:active {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:hover {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
+	.getwait-message:focus {
+		background-color: #ccc;
+		border-color: #ccc
+	}
+
 	.identity-input {
 		position: absolute;
 		top: 2px;

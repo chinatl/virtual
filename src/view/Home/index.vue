@@ -20,7 +20,7 @@
 						<li v-for='(item,index) in nav_data'
 							@click='change_nav(item,index)'
 							:class="current === index ? 'menu__item menu__item--current':'menu__item'" >
-							<a class="menu__link" style="line-height:25px"><img :src="item.markUrl" alt="" class="markUrl" v-if='item.vName !== "我的"'>{{item.vName}}{{$t('home["市场"]')}}</a>
+							<a class="menu__link" style="line-height:25px"><img :src="item.markUrl" alt="" class="markUrl" v-if='item.vName !== "自选"'>{{item.vName}}</a>
 						</li>
 					</ul>
 				</div>
@@ -57,17 +57,17 @@
 	</template>
 </el-table-column>
 
-<el-table-column align="center" :label="$t(`home['24h最大价格']`)">
+<el-table-column align="center" :label="$t(`home['24h最大价格']`)" width='170'>
 	<template slot-scope="scope">
 					<span style="color:rgb(253, 49, 91)">{{scope.row.maxprize | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[1]}}</span>
 					</template>
 </el-table-column>
-<el-table-column align="center" :label="$t(`home['24h最小价格']`)">
+<el-table-column align="center" :label="$t(`home['24h最小价格']`)" width='170'>
 	<template slot-scope="scope">
 					<span style="color:rgb(48, 194, 150)">{{scope.row.minprize | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[1]}}</span>
 					</template>
 </el-table-column>
-<el-table-column align="center" :label="$t(`home['24h总金额']`)">
+<el-table-column align="center" :label="$t(`home['24h总金额']`)" width='200'>
 	<template slot-scope="scope">
 					<span>{{scope.row.sumAnout | filter_num}} {{scope.row.vName && scope.row.vName.split('_')[0]}}</span>
 					</template>
@@ -191,7 +191,7 @@
 			},
 			add_my(item, index) {
 				var arr = JSON.parse(JSON.stringify(this.list));
-				if (this.nav_data[this.current].vName === '我的') {
+				if (this.nav_data[this.current].vName === '自选') {
 					this.myArr.splice(index, 1);
 					this.list.splice(index, 1);
 					localStorage.setItem('myscope', JSON.stringify(this.myArr));
@@ -230,7 +230,7 @@
 					return
 				}
 				this.current = index;
-				if (item.vName === '我的') {
+				if (item.vName === '自选') {
 					return this.list = JSON.parse(JSON.stringify(this.myArr))
 				};
 				this.init(item)
@@ -283,7 +283,7 @@
 					if (res.code === 0) {
 						this.nav_data = res.data;
 						this.nav_data.push({
-							vName: '我的',
+							vName: '自选',
 						})
 						this.nav = res.data[this.current];
 						this.init(res.data[this.current]);

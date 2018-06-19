@@ -135,11 +135,11 @@
 				</p>
 				<p>
 					<span>实到数量 ：</span>
-					<span class="dsadasd">{{big.amount * 0.995}} QC</span>
+					<span class="dsadasd">{{big.amount *  ( this.big.sell_buy ?  0.995 : 1)}} QC</span>
 				</p>
 				<p>
 					<span>转账金额 ：</span>
-					<span class="dsadasd">{{big.amount * 0.99 * big.prize}}CNY</span>
+					<span class="dsadasd">{{big.amount * ( this.big.sell_buy ?  0.99 : 1) * big.prize}}CNY</span>
 				</p>
 
 				<p>

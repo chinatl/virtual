@@ -83,7 +83,7 @@
 						</li>
 						<li  v-if='!$store.state.user.mainUsersId'>
 							<div class="l">
-								<h3>{{$t('user["手机"]')}}<span>{{$store.state.user.phone}}</span></h3>
+								<h3>{{$t('user["手机"]')}}</h3>
 								<p>
 			<!---->					<span class="auth" v-if='$store.state.user.phone'>{{$t('user["已设置"]')}}</span> 
 									<span class="not-auth" v-if='!$store.state.user.phone'>{{$t('user["未认证"]')}}</span>
@@ -542,10 +542,8 @@ width="30%"
 		methods: {
 			get_one_name(name) {
 				if (name) {
-					console.log(0)
 					return name[0]
 				} else {
-					console.log(1)
 				}
 			},
 			check_login(id) {
