@@ -14,7 +14,7 @@
 		  </el-carousel>
   		</div>
   		<div class="kline-trend con">
-  			<div style='position:relative'>  
+  			<div style='position:relative'>
 				<div class="con menu menu--prospero">
 					<ul class="menu__list">
 						<li v-for='(item,index) in nav_data'
@@ -29,7 +29,7 @@
 				</div>
   			</div>
   			<div class="trend-chart">
-				<el-table :data="list" 
+				<el-table :data="list"
 				v-loading='loading'
 				 fit highlight-current-row
 				 @row-click='pushtrade'
@@ -213,9 +213,10 @@
 				}
 			},
 			getColor() {
-				var arr = ['#aaaaaa', 'red', 'blue', 'black', 'green'];//在这配置
-//				return [arr[Math.floor(Math.random() * 5)]]
-				return ['red']
+
+				var arr = ['#f5d525', '#47e7f1', '#34ff85', '#ff2727', '#ff16ec',"ff5f11","#3442ff"];//在这配置
+  	    return [arr[Math.floor(Math.random() * 7)]]
+
 			},
 			getRound(maxPrice, list) {
 				if (!list || list.length === 0 || list.length === 1) {
